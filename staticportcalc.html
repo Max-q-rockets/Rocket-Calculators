@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/png"
+	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
+<head>
+<title>HTML Static Port Hole Calculator V1</title>
+<style type="text/css">
+form {
+display:block; 
+border:1px solid #000000; 
+border-radius:5px; 
+min-width:25px; height:4in; 
+margin:5px; padding:10px;
+text-align:justify; 
+background:#e5e5e5; 
+color:#000000; 
+float:left; }
+
+input[type="number"] {
+border:1px solid #000000; 
+border-radius:3px;
+width:1.5in; height:.15in; 
+margin:2px; padding:2px;
+text-align:justify;}
+select{
+width:.5in; height:.2in;
+margin:3px; }
+</style>
+<script type="text/javascript">
+function updatePort(){
+	const k=1.401;
+	const ChokeThresh=1.893532653;
+	const DischargeCoefficient=.62;
+	const g=9.80665;
+	const GasConstant=8.31432;
+	const LapseRate=-0.0065;
+	const ATM=101325;
+	const moleAir=0.0289645;
+	var form = document.getElementById("portcalc");
+	var out = form.elements["holesize"];
+	var alength=parseFloat(form.elements["avln"].value) * parseFloat(form.elements["lnun"].value);
+	var aradius=parseFloat(form.elements["avdi"].value) * parseFloat(form.elements["diun"].value)*5;
+	var numport=parseInt(form.elements["ports"].value);
+	var tempunit=parseInt(form.elements["tempun"].value);
+	switch(tempunit){
+		case 0:
+		var temp=parseFloat(form.elements["temp"].value);
+		temp = temp + 273.15;
+		break;
+		case 1:
+		var temp=((parseFloat(form.elements["temp"].value)) - 32) * 5/9 +273.15;
+		break;
+		case 2:
+		var temp=parseFloat(form.elements["temp"].value);
+		break;
+		case 3:
+		var temp=parseFloat(form.elements["temp"].value) * .555555555556;
+		break;
+	}
+	var lsalt=parseFloat(form.elements["alt"].value) * parseFloat(form.elements["alun"].value);
+	var vmax=parseFloat(form.elements["vel"].value) * parseFloat(form.elements["velun"].value);
+	var patlalt=ATM*Math.pow((temp/(temp+LapseRate*lsalt)),((g*moleAir)/(GasConstant*LapseRate)));
+	var AirDensity=(patlalt*moleAir)/(GasConstant*temp);
+	var atc1=(temp/(temp+LapseRate*(lsalt+1)));
+	var atc2=(g*moleAir)/(GasConstant*LapseRate);
+	var Atmpchange=(patlalt-ATM*(Math.pow(atc1, atc2)))/patlalt;
+	var PresEqRate=1/vmax;
+	var volume=alength*aradius*aradius*Math.PI;
+	var airMass=volume * AirDensity / (100^3);
+	var Q=airMass*Atmpchange*(vmax+1);	
+	var a1=Math.pow((1-Atmpchange), (2/k))-Math.pow((1-Atmpchange), ((k+1)/k));
+	var a2=2*AirDensity*patlalt*(k/(k-1));
+	var a3=Math.PI*numport*DischargeCoefficient;
+	var a4=4*Q;
+	var a5=Math.pow(a1*a2, .5);
+	var a6=a3 * a5;
+	var a7=a4/a6;
+	var answer=Math.pow(a7, .5);
+	var units=parseInt(form.elements["holeunits"].value);
+	switch(units){
+		case 0:
+		var size=(Math.ceil(answer*20))/20;
+		if (size < .35){
+			out.value=.35;
+		} else {
+			out.value=size;
+		}
+		break;
+		case 1:
+		var ans=answer/25.4;
+		var size=Math.ceil(ans*64);
+	
+		if (size % 64 == 0){
+			out.value=size/64;
+		} else if (size % 32 == 0){
+			out.value=size/32 + "/2";
+		} else if (size % 16 == 0){
+			out.value=size/16 + "/4";
+		} else if (size % 8 == 0){
+			out.value=size/8 + "/8";
+		} else if (size % 4 == 0){
+			out.value=size/4 + "/16";
+		} else if (size % 2 == 0){
+			out.value=size/2 + "/32";
+		} else {
+			out.value=size + "/64";
+		}
+		break;
+	}
+}
+</script>
+</head>
+<body>
+<span style="font-family: Helvetica;">
+<form id="portcalc" oninput="updatePort()">
+<b>PORT HOLE CALCULATOR</b>
+<br>Av-bay length:<br>
+<input name="avln" type="number" value="0"/>
+<select name="lnun" onchange="updatePort()">
+	<option value="0.1">mm</option>
+	<option selected="selected" value="1">cm</option>
+	<option value="100">m</option>
+	<option value="2.54">in</option>
+	<option value="30.48">ft</option>
+</select>
+<br>Av-bay diameter:<br>
+<input name="avdi" type="number" value="0"/>
+<select name="diun" onchange="updatePort()">
+	<option value="0.1">mm</option>
+	<option selected="selected" value="1">cm</option>
+	<option value="100">m</option>
+	<option value="2.54">in</option>
+	<option value="30.48">ft</option>
+</select>
+<br>Number of port holes:<br>
+<input name="ports" type="number" value="3"/><br>
+
+<br>Optional info:
+<br>Highest launch temp:<br>
+<input name="temp" type="number" value="20"/>
+<select name="tempun" onchange="updatePort()">
+	<option value="0">C</option>
+	<option value="1">F</option>
+	<option value="2">K</option>
+	<option value="3">R</option>
+</select>
+<br><span title="(Optional) Defaults to sea level">Launch site altitude (ASL):</span><br>
+<input name="alt" type="number" value="0"/>
+<select name="alun" onchange="updatePort()">
+	<option value="0.3408">ft</option>
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="1609.34">mi</option>
+</select>
+<br>Maximum velocity:<br>
+<input name="vel" type="number" value="200"/>
+<select name="velun" onchange="updatePort()">
+	<option value="0.3408">ft/s</option>
+	<option selected="selected" value="1">m/s</option>
+	<option value="0.277777777778">km/h</option>
+	<option value="0.44704">mi/h</option>
+	<option value="340">mach</option>
+</select>
+<br><br><br>Use
+<output name="holesize"></output>
+<select name="holeunits" onchange="updatePort()">
+	<option value="0">mm</option>
+	<option value="1">in</option>
+</select>
+static ports<br>
+</form>
+</span>
+</body>
+</html>
