@@ -9,7 +9,7 @@ form {
 display:block; 
 border:1px solid #000000; 
 border-radius:5px; 
-min-width:25px; height:7in; 
+min-width:25px; height:4in; 
 margin:5px; padding:10px;
 text-align:justify; 
 background:#e5e5e5; 
@@ -27,15 +27,14 @@ width:.5in; height:.2in;
 margin:3px; }
 </style>
 <script type="text/javascript">
-	function PfromAlt(alt){return 101325*(1 - 2.25577*10^-5*alt)^5.25588;}
+	function PfromAlt(alt){return 101325*Math.pow((1 - .0000225577*alt), 5.25588);}
 	function ChgMs(P, V){return P*V/(1830*1000*8.314);}
 	function updateOut(){
 		const pi = 3.141592653589;
-		const PSL = 101325;
 		var form = document.getElementById("EjectCalc");
-		var Charge = form.elements["holesize"];
+		var Charge = form.elements["ChargeSize"];
 		var PinGood = form.elements["pinGood"];
-		var plength=parseFloat(form.elements["length"].value) * parseFloat(form.elements["lnun"].value);
+		var plength=parseFloat(form.elements["len"].value) * parseFloat(form.elements["lnun"].value);
 		var pradius=parseFloat(form.elements["diam"].value) * parseFloat(form.elements["diun"].value)*0.5;
 		var LSElev=parseFloat(form.elements["elev"].value) * parseFloat(form.elements["elevun"].value);
 		var Alt=parseFloat(form.elements["alt"].value) * parseFloat(form.elements["alun"].value);
@@ -45,10 +44,20 @@ margin:3px; }
 		var PinForce = PinNum*iPinForce;
 		var SepForce = Fric+PinForce;
 		var Area = pradius*pradius*pi;
+		var Vol = Area*plength;
 		var PaGL = PfromAlt(LSElev);
-		var PaAp = PfromAlt(Alt);
+		var PaAp = PfromAlt(Alt+LSElev);
 		var DP = PaGL=PaAp;
-		var Pforce = DP*
+		var Pforce = DP*Area;
+		var NatSep = 100000*1.516*Math.pow(2.718282, (-40.34*Area));
+		if (PinNum != 0 && PinNum <3){PinGood.value = "You need at least 3 shear pins.";}
+		else if (Pforce < 0.85*SepForce){PinGood.value = "Good shear pin sizing and number.";}
+		else if (Pforce < SepForce){PinGood.value = "Marginal shear pin sizing and number.";}
+		else if (Pforce >= SepForce){PinGood.value = "Bad shear pin choice!";}
+		var Pjection = SepForce/Area;
+		var Pcalc2 = NatSep*NatSep+Pjection*Pjection;
+		var Pjection = Math.pow(Pcalc2, 0.5);
+		Charge.value = (Math.ceil(Pjection*Vol*.00457*100))/100;
 		
 	}
 	
@@ -56,40 +65,42 @@ margin:3px; }
 <body>
 <span style="font-family: Helvetica;">
 <form id="EjectCalc" oninput="updateOut()">
-<b>Ejection Charge/Shear Pin Calculator</b>
+<b>Ejection Charge Calculator V0.1</b>
 <br>Pressurized length:<br>
-<input name="length" type="number" value="0"/>
+<input name="len" type="number" value="0"/>
 <select name="lnun" onchange="updateOut()">
-	<option value="0.1">mm</option>
-	<option selected="selected" value="1">cm</option>
-	<option value="100">m</option>
-	<option value="2.54">in</option>
-	<option value="30.48">ft</option>
+	<option value="0.001">mm</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
 </select>
 
 <br>Pressurized diameter:<br>
 <input name="diam" type="number" value="0"/>
 <select name="diun" onchange="updateOut()">
 	<option value="0.1">mm</option>
-	<option selected="selected" value="1">cm</option>
-	<option value="100">m</option>
-	<option value="2.54">in</option>
-	<option value="30.48">ft</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
 </select>
 
 <br><span title="(Optional) Defaults to sea level">Launch site altitude (ASL):</span><br>
 <input name="elev" type="number" value="0"/>
 <select name="elevun" onchange="updateOut()">
 	<option value="0.3408">ft</option>
+		<option value="340.8">kft</option>
 	<option selected="selected" value="1">m</option>
 	<option value="1000">km</option>
 	<option value="1609.34">mi</option>
 </select>
 
-<br>Maximum altitude expected (AGL):<br>
+<br>Apogee (AGL):<br>
 <input name="alt" type="number" value="0"/>
 <select name="alun" onchange="updateOut()">
 	<option value="0.3408">ft</option>
+	<option value="340.8">kft</option>
 	<option selected="selected" value="1">m</option>
 	<option value="1000">km</option>
 	<option value="1609.34">mi</option>
@@ -116,9 +127,11 @@ margin:3px; }
 	<option value="364.63">6-32</option>
 </select>
 
-<output name="pinGood"></output>
 
-Use
+
+<br><br><output name="pinGood"></output>
+
+<br><br>Use
 <output name="ChargeSize"></output>
 grams of BP<br>
 
