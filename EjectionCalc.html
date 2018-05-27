@@ -30,6 +30,25 @@ margin:3px; }
 	function PfromAlt(alt){return 101325*(1 - 2.25577*10^-5*alt)^5.25588;}
 	function ChgMs(P, V){return P*V/(1830*1000*8.314);}
 	function updateOut(){
+		const pi = 3.141592653589;
+		const PSL = 101325;
+		var form = document.getElementById("EjectCalc");
+		var Charge = form.elements["holesize"];
+		var PinGood = form.elements["pinGood"];
+		var plength=parseFloat(form.elements["length"].value) * parseFloat(form.elements["lnun"].value);
+		var pradius=parseFloat(form.elements["diam"].value) * parseFloat(form.elements["diun"].value)*0.5;
+		var LSElev=parseFloat(form.elements["elev"].value) * parseFloat(form.elements["elevun"].value);
+		var Alt=parseFloat(form.elements["alt"].value) * parseFloat(form.elements["alun"].value);
+		var Fric=parseFloat(form.elements["Fric"].value) * parseFloat(form.elements["Frun"].value);
+		var PinNum=parseFloat(form.elements["Pin"].value);
+		var iPinForce=parseFloat(form.elements["Pintype"].value);
+		var PinForce = PinNum*iPinForce;
+		var SepForce = Fric+PinForce;
+		var Area = pradius*pradius*pi;
+		var PaGL = PfromAlt(LSElev);
+		var PaAp = PfromAlt(Alt);
+		var DP = PaGL=PaAp;
+		var Pforce = DP*
 		
 	}
 	
@@ -88,10 +107,20 @@ margin:3px; }
 <br>Shear pin number and type:<br>
 <input name="Pin" type="number" value="0"/>
 <select name="Pintype" onchange="updateOut()">
-	<option selected="selected" value="1">m</option>
-	<option value="1000">km</option>
-	<option value="1609.34">mi</option>
+	<option selected="selected" value="73.3">0-80</option>
+	<option value="129.52">M2</option>
+	<option value="150.72">2-56</option>
+	<option value="198.17">M2.5</option>
+	<option value="242.46">4-40</option>
+	<option value="323.86">M3</option>
+	<option value="364.63">6-32</option>
 </select>
+
+<output name="pinGood"></output>
+
+Use
+<output name="ChargeSize"></output>
+grams of BP<br>
 
 </form>
 </span>
