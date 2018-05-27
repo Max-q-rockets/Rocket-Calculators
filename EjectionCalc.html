@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/png"
+	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
+<head>
+<title>HTML Ejection charge/Shear Pin Calculator V1</title>
+<style type="text/css">
+form {
+display:block; 
+border:1px solid #000000; 
+border-radius:5px; 
+min-width:25px; height:7in; 
+margin:5px; padding:10px;
+text-align:justify; 
+background:#e5e5e5; 
+color:#000000; 
+float:left; }
+
+input[type="number"] {
+border:1px solid #000000; 
+border-radius:3px;
+width:1.5in; height:.15in; 
+margin:2px; padding:2px;
+text-align:justify;}
+select{
+width:.5in; height:.2in;
+margin:3px; }
+</style>
+<script type="text/javascript">
+	function PfromAlt(alt){return 101325*(1 - 2.25577*10^-5*alt)^5.25588;}
+	function ChgMs(P, V){return P*V/(1830*1000*8.314);}
+	function updateOut(){
+		
+	}
+	
+</script>
+<body>
+<span style="font-family: Helvetica;">
+<form id="EjectCalc" oninput="updateOut()">
+<b>Ejection Charge/Shear Pin Calculator</b>
+<br>Pressurized length:<br>
+<input name="length" type="number" value="0"/>
+<select name="lnun" onchange="updateOut()">
+	<option value="0.1">mm</option>
+	<option selected="selected" value="1">cm</option>
+	<option value="100">m</option>
+	<option value="2.54">in</option>
+	<option value="30.48">ft</option>
+</select>
+
+<br>Pressurized diameter:<br>
+<input name="diam" type="number" value="0"/>
+<select name="diun" onchange="updateOut()">
+	<option value="0.1">mm</option>
+	<option selected="selected" value="1">cm</option>
+	<option value="100">m</option>
+	<option value="2.54">in</option>
+	<option value="30.48">ft</option>
+</select>
+
+<br><span title="(Optional) Defaults to sea level">Launch site altitude (ASL):</span><br>
+<input name="elev" type="number" value="0"/>
+<select name="elevun" onchange="updateOut()">
+	<option value="0.3408">ft</option>
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="1609.34">mi</option>
+</select>
+
+<br>Maximum altitude expected (AGL):<br>
+<input name="alt" type="number" value="0"/>
+<select name="alun" onchange="updateOut()">
+	<option value="0.3408">ft</option>
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="1609.34">mi</option>
+</select>
+
+<br>Friction force:<br>
+<input name="Fric" type="number" value="0"/>
+<select name="Frun" onchange="updateOut()">
+	<option value="0.2248">lb</option>
+	<option selected="selected" value="1">N</option>
+	<option value="102">g f</option>
+	<option value=".102">kg f</option>
+</select>
+
+<br>Shear pin number and type:<br>
+<input name="Pin" type="number" value="0"/>
+<select name="Pintype" onchange="updateOut()">
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="1609.34">mi</option>
+</select>
+
+</form>
+</span>
+</body>
+</html>
