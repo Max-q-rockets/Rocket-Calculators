@@ -46,7 +46,7 @@ margin:3px; }
 		var Vol = Area*plength;
 		var PaGL = PfromAlt(LSElev);
 		var PaAp = PfromAlt(Alt+LSElev);
-		var DP = PaGL=PaAp;
+		var DP = PaGL-PaAp;
 		var Pforce = DP*Area;
 		var NatSep = 100000*2.0716*Math.pow(2.718282, (-7.17*pradius));
 		if (PinNum != 0 && PinNum <3){PinGood.value = "You need at least 3 shear pins.";}
@@ -78,7 +78,7 @@ margin:3px; }
 <br>Pressurized diameter:<br>
 <input name="diam" type="number" value="0"/>
 <select name="diun" onchange="updateOut()">
-	<option value="0.1">mm</option>
+	<option value="0.001">mm</option>
 	<option selected="selected" value=".01">cm</option>
 	<option value="1">m</option>
 	<option value=".0254">in</option>
