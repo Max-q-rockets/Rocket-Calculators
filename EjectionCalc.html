@@ -9,7 +9,7 @@ form {
 display:block; 
 border:1px solid #000000; 
 border-radius:5px; 
-min-width:25px; height:4in; 
+min-width:2in; height:4in; 
 margin:5px; padding:10px;
 text-align:justify; 
 background:#e5e5e5; 
@@ -28,7 +28,6 @@ margin:3px; }
 </style>
 <script type="text/javascript">
 	function PfromAlt(alt){return 101325*Math.pow((1 - .0000225577*alt), 5.25588);}
-	function ChgMs(P, V){return P*V/(1830*1000*8.314);}
 	function updateOut(){
 		const pi = 3.141592653589;
 		var form = document.getElementById("EjectCalc");
@@ -51,8 +50,8 @@ margin:3px; }
 		var Pforce = DP*Area;
 		var NatSep = 100000*2.0716*Math.pow(2.718282, (-7.17*pradius));
 		if (PinNum != 0 && PinNum <3){PinGood.value = "You need at least 3 shear pins.";}
-		else if (Pforce < 0.85*SepForce){PinGood.value = "Good shear pin sizing and number.";}
-		else if (Pforce < SepForce){PinGood.value = "Marginal shear pin sizing and number.";}
+		else if (Pforce < 0.85*SepForce){PinGood.value = "Good shear pin choice.";}
+		else if (Pforce < SepForce){PinGood.value = "Marginal shear pin choice.";}
 		else if (Pforce >= SepForce){PinGood.value = "Bad shear pin choice!";}
 		var Pjection = SepForce/Area;
 		var Pcalc2 = NatSep*NatSep+Pjection*Pjection;
