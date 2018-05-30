@@ -9,7 +9,7 @@ form {
 display:block; 
 border:1px solid #000000; 
 border-radius:5px; 
-min-width:2in; height:5.4in; 
+min-width:2in; height:5.5in; 
 margin:5px; padding:10px;
 text-align:justify; 
 background:#e5e5e5; 
@@ -35,8 +35,9 @@ margin:3px; }
 		const NylSSmax = 80000000;
 		const NylSSmin = 65000000;
 		var form = document.getElementById("EjectCalc");
-		var Charge = form.elements["ChargeSize"];
+		var Charge;
 		var PinGood = form.elements["pinGood"];
+		var DisplayMessage = form.elements["dispMess"];
 		var plength=parseFloat(form.elements["len"].value) * parseFloat(form.elements["lnun"].value);
 		var pradius=parseFloat(form.elements["diam"].value) * parseFloat(form.elements["diun"].value)*0.5;
 		var LSElev=parseFloat(form.elements["elev"].value) * parseFloat(form.elements["elevun"].value);
@@ -68,8 +69,25 @@ margin:3px; }
 		else if (Pforce < 0.85*StaticSepForceMin){PinGood.value = "Good shear pin choice.";}
 		else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
 		else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice!";}
+
+		// DisplayMessage.value = "Hello World.";
+		if((0 > plength) || (0 > pradius) || (0 > Alt) || (0 > Fric) || (0 > PinNum) || (0 > MEject) || (0 > CoupLen) || (0 > VEject) || (0 > SF)){
+			DisplayMessage.value = "Invalid negative Input.";
+			return;
+		}
+
 		var Pjection = SepForce/Area;
-		Charge.value = (SF*Pjection*Vol*.00457).toFixed(3);
+		Charge = (SF*Pjection*Vol*.00457).toFixed(3);
+
+		if(Charge < 1000){
+			DisplayMessage.value = " Use " + Charge + " grams of black powder.";
+		} else if (isNaN(Charge)){
+			DisplayMessage.value = "";
+		} else {
+			DisplayMessage.value = " Unrealistic Input: " + Charge + " grams";
+		}
+
+		
 		
 	}
 	
@@ -173,7 +191,7 @@ margin:3px; }
 <br>Safety Factor:<br>
 <input name="SF" type="number" step="0.05" min="1" value="1.2"/>
 
-<br><br><strong>Use <output name="ChargeSize"></output> grams of BP</strong>
+<br><br><strong><output name="dispMess"></output></strong>
 
 </form>
 </span>
