@@ -32,7 +32,8 @@ margin:3px; }
 	function updateOut(){
 		const pi = 3.141592653589;
 		const G = 9.807;
-		const NylSS = 80000000;
+		const NylSSmax = 80000000;
+		const NylSSmin = 65000000;
 		var form = document.getElementById("EjectCalc");
 		var Charge = form.elements["ChargeSize"];
 		var PinGood = form.elements["pinGood"];
@@ -46,14 +47,16 @@ margin:3px; }
 		var MEject=parseFloat(form.elements["MEject"].value) * parseFloat(form.elements["MUnit"].value);
 		var CoupLen=parseFloat(form.elements["CoupLen"].value) * parseFloat(form.elements["CLun"].value);
 		var VEject=parseFloat(form.elements["VEject"].value) * parseFloat(form.elements["VEun"].value);
-		var SF = 1+parseFloat(form.elements["SF"].value);
+		var SF = parseFloat(form.elements["SF"].value);
 		var Area = pradius*pradius*pi;
-		var PinForce = PinNum*pi*PinRad*PinRad*NylSS;
+		var PinForcemax = PinNum*pi*PinRad*PinRad*NylSSmax;
+		var PinForcemin = PinNum*pi*PinRad*PinRad*NylSSmin;
 		var Efinal=0.5*MEject*VEject*VEject;
 		var EFric=CoupLen*Fric;
-		var EPin= pi*PinRad*PinRad*PinRad*NylSS;
+		var EPin= pi*PinRad*PinRad*PinRad*NylSSmax;
 		var Etotal=Efinal+EFric+EPin;
-		var StaticSepForce = Fric+PinForce;
+		var StaticSepForce = Fric+PinForcemax;
+		var StaticSepForceMin = Fric+PinForcemin;
 		var DynamicSepForce = Etotal/CoupLen;
 		var SepForce = Math.pow((StaticSepForce*StaticSepForce+DynamicSepForce*DynamicSepForce), 0.5);
 		var Vol = Area*plength;
@@ -62,7 +65,7 @@ margin:3px; }
 		var DP = PaGL-PaAp;
 		var Pforce = DP*Area;
 		if (PinNum != 0 && PinNum <3){PinGood.value = "You need at least 3 shear pins.";}
-		else if (Pforce < 0.65*StaticSepForce){PinGood.value = "Good shear pin choice.";}
+		else if (Pforce < 0.85*StaticSepForceMin){PinGood.value = "Good shear pin choice.";}
 		else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
 		else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice!";}
 		var Pjection = SepForce/Area;
@@ -167,8 +170,8 @@ margin:3px; }
 	<option value="0.3408">ft/s</option>
 </select>
 
-<br>Safety Margin:<br>
-<input name="SF" type="number" value="0.2"/>
+<br>Safety Factor:<br>
+<input name="SF" type="number" min="1" value="1.2"/>
 
 <br><br><strong>Use <output name="ChargeSize"></output> grams of BP</strong>
 
