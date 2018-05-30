@@ -9,7 +9,7 @@ form {
 display:block; 
 border:1px solid #000000; 
 border-radius:5px; 
-min-width:2in; height:5.3in; 
+min-width:2in; height:5.4in; 
 margin:5px; padding:10px;
 text-align:justify; 
 background:#e5e5e5; 
@@ -95,7 +95,7 @@ margin:3px; }
 	<option value=".3048">ft</option>
 </select>
 
-<br><span title="(Optional) Defaults to sea level">Launch site altitude (ASL):</span><br>
+<br>Launch site altitude (ASL):<br>
 <input name="elev" type="number" value="0"/>
 <select name="elevun" onchange="updateOut()">
 	<option selected="selected" value="1">m</option>
@@ -136,7 +136,9 @@ margin:3px; }
 	<option value=".0012662">6-32</option>
 </select>
 
-<br>Ejection Component mass:<br>
+<br><strong><output name="pinGood"></output></strong>
+
+<br><br>Ejection Component mass:<br>
 <input name="MEject" type="number" value="0"/>
 <select name="MUnit" onchange="updateOut()">
 	<option selected="selected" value="1">kg</option>
@@ -175,11 +177,8 @@ margin:3px; }
 </select>
 
 
-<br><br><output name="pinGood"></output>
 
-<br>Use
-<output name="ChargeSize"></output>
-grams of BP<br>
+<br><br><strong>Use<output name="ChargeSize"></output> grams of BP</strong>
 
 </form>
 </span>
