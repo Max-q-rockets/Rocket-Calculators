@@ -9,7 +9,7 @@ form {
 display:block; 
 border:1px solid #000000; 
 border-radius:5px; 
-min-width:2in; height:5.4in; 
+min-width:2in; height:5in; 
 margin:5px; padding:10px;
 text-align:justify; 
 background:#e5e5e5; 
@@ -32,7 +32,7 @@ margin:3px; }
 	function updateOut(){
 		const pi = 3.141592653589;
 		const G = 9.807;
-		const NylSS = 82700000;
+		const NylSS = 80000000;
 		var form = document.getElementById("EjectCalc");
 		var Charge = form.elements["ChargeSize"];
 		var PinGood = form.elements["pinGood"];
@@ -46,7 +46,6 @@ margin:3px; }
 		var MEject=parseFloat(form.elements["MEject"].value) * parseFloat(form.elements["MUnit"].value);
 		var CoupLen=parseFloat(form.elements["CoupLen"].value) * parseFloat(form.elements["CLun"].value);
 		var VEject=parseFloat(form.elements["VEject"].value) * parseFloat(form.elements["VEun"].value);
-		var Vap = parseFloat(form.elements["Vap"].value) * parseFloat(form.elements["Vapun"].value);
 		var Area = pradius*pradius*pi;
 		var PinForce = PinNum*pi*PinRad*PinRad*NylSS;
 		var Efinal=0.5*MEject*VEject*VEject;
@@ -54,7 +53,7 @@ margin:3px; }
 		var EPin= pi*PinRad*PinRad*PinRad*NylSS;
 		var Etotal=Efinal+EFric+EPin;
 		var StaticSepForce = Fric+PinForce;
-		var DynamicSepForce = Etotal/CoupLen+0.5*DfromAlt(Alt+LSElev)*(VEject+Vap)*(VEject+Vap)*0.2*Area;
+		var DynamicSepForce = Etotal/CoupLen;
 		var SepForce = Math.pow((StaticSepForce*StaticSepForce+DynamicSepForce*DynamicSepForce), 0.5);
 		var Vol = Area*plength;
 		var PaGL = PfromAlt(LSElev);
@@ -62,7 +61,7 @@ margin:3px; }
 		var DP = PaGL-PaAp;
 		var Pforce = DP*Area;
 		if (PinNum != 0 && PinNum <3){PinGood.value = "You need at least 3 shear pins.";}
-		else if (Pforce < 0.85*StaticSepForce){PinGood.value = "Good shear pin choice.";}
+		else if (Pforce < 0.65*StaticSepForce){PinGood.value = "Good shear pin choice.";}
 		else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
 		else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice!";}
 		var Pjection = SepForce/Area;
@@ -161,15 +160,6 @@ margin:3px; }
 <br>Desired Ejection Velocity:<br>
 <input name="VEject" type="number" value="4"/>
 <select name="VEun" onchange="updateOut()">
-	<option selected="selected" value="1">m/s</option>
-	<option value="0.277777777778">km/hr</option>
-	<option value="0.44704">mi/hr</option>
-	<option value="0.3408">ft/s</option>
-</select>
-
-<br>Estimated Apogee Velocity:<br>
-<input name="Vap" type="number" value="4"/>
-<select name="Vapun" onchange="updateOut()">
 	<option selected="selected" value="1">m/s</option>
 	<option value="0.277777777778">km/hr</option>
 	<option value="0.44704">mi/hr</option>
