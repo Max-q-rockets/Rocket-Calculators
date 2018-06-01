@@ -40,33 +40,52 @@ margin:3px; }
 		var pradius=parseFloat(form.elements["diam"].value) * parseFloat(form.elements["diun"].value)*0.5;
 		var LSElev=parseFloat(form.elements["elev"].value) * parseFloat(form.elements["elevun"].value);
 		var Alt=parseFloat(form.elements["alt"].value) * parseFloat(form.elements["alun"].value);
-		var Fric=parseFloat(form.elements["Fric"].value) * parseFloat(form.elements["Frun"].value);
+		var Frun = parseFloat(form.elements["Frun"].value);
+		var Fric=parseFloat(form.elements["Fric"].value) * Frun;
 		var PinNum=parseInt(form.elements["Pin"].value)
 		var PinRad=parseFloat(form.elements["Pintype"].value);
 		var MEject=parseFloat(form.elements["MEject"].value) * parseFloat(form.elements["MUnit"].value);
 		var CoupLen=parseFloat(form.elements["CoupLen"].value) * parseFloat(form.elements["CLun"].value);
+		if (isNaN(CoupLen)) {CoupLen = 2*pradius;}
 		var VEject=parseFloat(form.elements["VEject"].value) * parseFloat(form.elements["VEun"].value);
 		var SF = parseFloat(form.elements["SF"].value);
 		var Area = pradius*pradius*pi;
+		var PaGL = PfromAlt(LSElev);
+		var PaAp = PfromAlt(Alt+LSElev);
+		var DP = PaGL-PaAp;
+		var Pforce = DP*Area;
+		var Efinal=0.5*MEject*VEject*VEject;
+		if (isNaN(PinNum) && isNaN(Fric) || PinNum == 0 && isNaN(Fric))
+		{
+			var check = false;
+			var Fric = 1.2*Pforce;
+		}
+		else {var check = true;}
 		var PinForcemax = PinNum*pi*PinRad*PinRad*NylSSmax;
 		var PinForcemin = PinNum*pi*PinRad*PinRad*NylSSmin;
-		var Efinal=0.5*MEject*VEject*VEject;
 		var EFric=CoupLen*Fric;
 		var EPin= pi*PinRad*PinRad*PinRad*NylSSmax;
 		var Etotal=Efinal+EFric+EPin;
 		var StaticSepForce = Fric+PinForcemax;
 		var StaticSepForceMin = Fric+PinForcemin;
 		var DynamicSepForce = Etotal/CoupLen;
+		if (check)
+		{
+			if (PinNum != 0 && PinNum <3){PinGood.value = "You need at least 3 shear pins.";}
+			else if (Pforce < 0.85*StaticSepForceMin){PinGood.value = "Good shear pin choice.";}
+			else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
+			else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice!";}
+		}
+		else
+		{
+			var output = Pforce/Frun;
+			if (Frun == 1){PinGood.value = Pforce.toFixed(0) + " N at apogee";}
+			else if(Frun == 4.4482){PinGood.value = output.toFixed(1) + " Lb at apogee";}
+			else if(Frun == .00980665){PinGood.value = output.toFixed(0) + " gf at apogee";}
+			else if(Frun == 9.80665){PinGood.value = output.toFixed(1)+ " Kgf at apogee";}
+		}
 		var SepForce = Math.pow((StaticSepForce*StaticSepForce+DynamicSepForce*DynamicSepForce), 0.5);
 		var Vol = Area*plength;
-		var PaGL = PfromAlt(LSElev);
-		var PaAp = PfromAlt(Alt+LSElev);
-		var DP = PaGL-PaAp;
-		var Pforce = DP*Area;
-		if (PinNum != 0 && PinNum <3){PinGood.value = "You need at least 3 shear pins.";}
-		else if (Pforce < 0.85*StaticSepForceMin){PinGood.value = "Good shear pin choice.";}
-		else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
-		else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice!";}
 		var Pjection = SepForce/Area;
 		Chg = (SF*Pjection*Vol*.00457).toFixed(3);
 		
@@ -126,7 +145,7 @@ margin:3px; }
 </select>
 
 <br>Friction force:<br>
-<input name="Fric" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="Fric" type="number" value="" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
 <select name="Frun" onchange="updateOut()">
 	<option value="4.4482">lb</option>
 	<option selected="selected" value="1">N</option>
@@ -159,7 +178,7 @@ margin:3px; }
 </select>
 
 <br>Coupler Shoulder Length:<br>
-<input name="CoupLen" type="number" value="7.5" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="CoupLen" type="number" value="" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
 <select name="CLun" onchange="updateOut()">
 	<option value="0.001">mm</option>
 	<option selected="selected" value=".01">cm</option>
