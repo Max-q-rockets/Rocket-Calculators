@@ -55,7 +55,7 @@ margin:3px; }
 		var DP = PaGL-PaAp;
 		var Pforce = DP*Area;
 		var Efinal=0.5*MEject*VEject*VEject;
-		if (isNaN(PinNum) && isNaN(Fric) || PinNum == 0 && isNaN(Fric))
+		if (isNaN(PinNum) && isNaN(Fric) || PinNum == 0 && isNaN(Fric) || isNaN(PinNum) && Fric == 0 || PinNum == 0 && Fric == 0)
 		{
 			var check = false;
 			var Fric = 1.2*Pforce;
@@ -103,7 +103,7 @@ margin:3px; }
 <body>
 <span style="font-family: Helvetica;">
 <form id="EjectCalc" oninput="updateOut()">
-<b>Ejection Charge Calculator V0.2</b>
+<b>Ejection Charge Calculator V0.3</b>
 <br>Pressurized length:<br>
 <input name="len" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
 <select name="lnun" onchange="updateOut()">
@@ -145,7 +145,7 @@ margin:3px; }
 </select>
 
 <br>Friction force:<br>
-<input name="Fric" type="number" value="" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="Fric" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
 <select name="Frun" onchange="updateOut()">
 	<option value="4.4482">lb</option>
 	<option selected="selected" value="1">N</option>
