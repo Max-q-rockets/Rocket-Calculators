@@ -3,7 +3,7 @@
 <link rel="icon" type="image/png"
 	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
 <head>
-<title>Ejection charge Calculator V2</title>
+<title>Ejection charge Calculator V2.5</title>
 <style type="text/css">
 form {
 display:block; 
@@ -27,8 +27,7 @@ width:.55in; height:.2in;
 margin:3px; }
 </style>
 <script type="text/javascript">
-	function PfromAlt(alt){return 101325*Math.pow((1 - .0000225577*alt), 5.25588);}
-	function DfromAlt(alt){return 1.225*Math.pow(2.71828183, -alt*.00001267);}
+	function PfromAlt(alt){return (101325+alt*13.06+alt*alt*0.0007354+alt*alt*alt*alt*0.000000000000602)*Math.exp(-0.0002465*alt);}
 	function updateOut(){
 		const pi = 3.141592653589;
 		const G = 9.807;
