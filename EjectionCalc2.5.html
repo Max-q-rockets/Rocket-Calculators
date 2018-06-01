@@ -69,7 +69,15 @@ margin:3px; }
 		else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
 		else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice!";}
 		var Pjection = SepForce/Area;
-		Charge.value = (SF*Pjection*Vol*.00457).toFixed(3);
+		Chg = (SF*Pjection*Vol*.00457).toFixed(3);
+		
+		if(Chg < 1000){
+			Charge.value = " Use " + Chg + " grams of black powder.";
+		} else if (isNaN(Chg)){
+			Charge.value = "";
+		} else {
+			Charge.value = " Unrealistic Input: " + Chg + " grams";
+		}
 		
 	}
 	
@@ -173,7 +181,7 @@ margin:3px; }
 <br>Safety Factor:<br>
 <input name="SF" type="number" step="0.05" min="1" value="1.2" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46"/>
 
-<br><br><strong>Use <output name="ChargeSize"></output> grams of BP</strong>
+<br><br><strong><output name="ChargeSize"></output></strong>
 
 </form>
 </span>
