@@ -9,7 +9,7 @@ form {
 display:block; 
 border:1px solid #000000; 
 border-radius:5px; 
-min-width:2in; height:5.5in; 
+min-width:2.25in; height:5.5in; 
 margin:5px; padding:10px;
 text-align:justify; 
 background:#e5e5e5; 
@@ -19,7 +19,7 @@ float:left; }
 input[type="number"] {
 border:1px solid #000000; 
 border-radius:3px;
-width:1.5in; height:.15in; 
+width:1.75in; height:.15in; 
 margin:2px; padding:2px;
 text-align:justify;}
 select{
@@ -45,6 +45,7 @@ margin:3px; }
 		var PinNum=parseInt(form.elements["Pin"].value)
 		var PinRad=parseFloat(form.elements["Pintype"].value);
 		var MEject=parseFloat(form.elements["MEject"].value) * parseFloat(form.elements["MUnit"].value);
+		if (isNaN(MEject)){MEject=0;}
 		var CoupLen=parseFloat(form.elements["CoupLen"].value) * parseFloat(form.elements["CLun"].value);
 		if (isNaN(CoupLen)) {CoupLen = 2*pradius;}
 		var VEject=parseFloat(form.elements["VEject"].value) * parseFloat(form.elements["VEun"].value);
@@ -79,7 +80,8 @@ margin:3px; }
 		else
 		{
 			var output = Pforce/Frun;
-			if (Frun == 1){PinGood.value = Pforce.toFixed(0) + " N at apogee";}
+			if (isNaN(output)){PinGood.value = "";}
+			else if(Frun == 1){PinGood.value = Pforce.toFixed(0) + " N at apogee";}
 			else if(Frun == 4.4482){PinGood.value = output.toFixed(1) + " Lb at apogee";}
 			else if(Frun == .00980665){PinGood.value = output.toFixed(0) + " gf at apogee";}
 			else if(Frun == 9.80665){PinGood.value = output.toFixed(1)+ " Kgf at apogee";}
