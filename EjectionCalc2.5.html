@@ -72,10 +72,10 @@ margin:3px; }
 		var DynamicSepForce = Etotal/CoupLen;
 		if (check)
 		{
-			if (PinNum != 0 && PinNum <3){PinGood.value = "You need at least 3 shear pins.";}
+			if (PinNum==1){PinGood.value = "You need at least 2 shear pins.";}
 			else if (Pforce < 0.85*StaticSepForceMin){PinGood.value = "Good shear pin choice.";}
 			else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
-			else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice!";}
+			else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice.";}
 		}
 		else
 		{
@@ -180,7 +180,7 @@ margin:3px; }
 </select>
 
 <br>Coupler Shoulder Length:<br>
-<input name="CoupLen" type="number" value="" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="CoupLen" type="number" value="" placeholder="assumes 1 cal if blank" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
 <select name="CLun" onchange="updateOut()">
 	<option value="0.001">mm</option>
 	<option selected="selected" value=".01">cm</option>
