@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/png"
+	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
+<head>
+<title>HTML Static Port Hole Calculator V1</title>
+<style type="text/css">
+form {
+display:block; 
+border:1px solid #000000; 
+border-radius:5px; 
+min-width:25px; height:4in; 
+margin:5px; padding:10px;
+text-align:justify; 
+background:#e5e5e5; 
+color:#000000; 
+float:left; }
+
+input[type="number"] {
+border:1px solid #000000; 
+border-radius:3px;
+width:1.5in; height:.15in; 
+margin:2px; padding:2px;
+text-align:justify;}
+select{
+width:.5in; height:.2in;
+margin:3px; }
+</style>
+<script type="text/javascript">
+function updatePort(){
+	var form = document.getElementById("portcalc");
+	var out = form.elements["CG"];
+	var RootChord=parseFloat(form.elements["RC"].value);
+	var TipChord=parseFloat(form.elements["TC"].value);
+	var Height=parseFloat(form.elements["H"].value);
+	var Sweep=parseFloat(form.elements["SW"].value);
+	CGnd = (2*TipChord*Sweep+TipChord*TipChord+Sweep*RootChord+TipChord*RootChord+RootChord*RootChord)/(3*RootChord*(RootChord+TipChord));
+	out.value = CGnd.toFixed(3);
+}
+</script>
+</head>
+<body>
+<span style="font-family: Helvetica;">
+<form id="portcalc" oninput="updatePort()">
+<b>FIN CG CALCULATOR</b>
+<br>Give all specs in same unit<br>
+<br>Root chord:<br>
+<input name="RC" type="number" value="0" onchange="updatePort()"/>
+<br>Tip chord:<br>
+<input name="TC" type="number" value="0" onchange="updatePort()"/>
+<br>Height (semi-span):<br>
+<input name="H" type="number" value="0" onchange="updatePort()"/>
+<br>Sweep length:<br>
+<input name="SW" type="number" value="0" onchange="updatePort()"/>
+<br><br><br>CG at 
+<output name="CG"></output>
+<br>
+</form>
+</span>
+</body>
+</html>
