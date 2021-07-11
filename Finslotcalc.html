@@ -9,7 +9,7 @@ form {
 display:block; 
 border:1px solid #000000; 
 border-radius:5px; 
-min-width:25px; height:3in; 
+min-width:25px; height:2.8in; 
 margin:5px; padding:10px;
 text-align:justify; 
 background:#e5e5e5; 
@@ -23,7 +23,7 @@ width:0.5in; height:.15in;
 margin:2px; padding:2px;
 text-align:justify;}
 select{
-width:.5in; height:.2in;
+width:.75in; height:.2in;
 margin:3px; }
 </style>
 <script type="text/javascript">
@@ -37,7 +37,7 @@ function updateOut(){
 	var Slop=parseFloat(form.elements["Slop"].value);
 	SF = 1+Slop/100;
 	rotate = 2*(Math.asin((Width*WidthUnit)/TubeSize)-Math.asin(BitSize/TubeSize))*180/Math.PI*SF;
-	out.value = rotate.toFixed(3)
+	out.value = rotate.toFixed(2)
 }
 </script>
 </head>
@@ -45,7 +45,7 @@ function updateOut(){
 <span style="font-family: Helvetica;">
 <form id="slotcalc" oninput="updateOut()">
 <b>Fin Slot Calculator</b>
-<br><br>
+<br>
 
 <br>Body Tube size<br>
 <select name="Tubesize" onchange="updateOut()">
@@ -66,6 +66,7 @@ function updateOut(){
 	<option value="0.0625">1/16"</option>
 	<option value="0.09375">3/32"</option>
 	<option selected="selected" value=".125">1/8"</option>
+	<option value="other">other</option>
 </select>
 <br>Slot width<br>
 <input name="w" type="number" value="0.125"/>
