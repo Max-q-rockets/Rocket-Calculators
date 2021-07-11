@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/png"
+	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
+<head>
+<title>HTML fin slot angle calculator V0.1</title>
+<style type="text/css">
+form {
+display:block; 
+border:1px solid #000000; 
+border-radius:5px; 
+min-width:25px; height:3in; 
+margin:5px; padding:10px;
+text-align:justify; 
+background:#e5e5e5; 
+color:#000000; 
+float:left; }
+
+input[type="number"] {
+border:1px solid #000000; 
+border-radius:3px;
+width:0.5in; height:.15in; 
+margin:2px; padding:2px;
+text-align:justify;}
+select{
+width:.5in; height:.2in;
+margin:3px; }
+</style>
+<script type="text/javascript">
+function updateOut(){
+	var form = document.getElementById("slotcalc");
+	var out = form.elements["Angle"];
+	var TubeSize=parseFloat(form.elements["Tubesize"].value);
+	var BitSize=parseFloat(form.elements["Bitsize"].value);
+	var Width=parseFloat(form.elements["w"].value);
+	var WidthUnit=parseFloat(form.elements["wun"].value);
+	var Slop=parseFloat(form.elements["Slop"].value);
+	SF = 1+Slop/100;
+	rotate = 2*(Math.asin((Width*WidthUnit)/TubeSize)-Math.asin(BitSize/TubeSize))*180/Math.PI*SF;
+	out.value = rotate.toFixed(3)
+}
+</script>
+</head>
+<body>
+<span style="font-family: Helvetica;">
+<form id="slotcalc" oninput="updateOut()">
+<b>Fin Slot Calculator</b>
+<br><br>
+
+<br>Body Tube size<br>
+<select name="Tubesize" onchange="updateOut()">
+	<option value="1.145">1.1"/29mm</option>
+	<option value="1.52">1.5"/38mm</option>
+	<option value="2.152">2.1"/54mm</option>
+	<option value="2.558">2.6"/65mm</option>
+	<option value="3.005">3.0"/75mm</option>
+	<option selected="selected" value="3.90">4"/98mm</option>
+	<option value="5.00">5.0"</option>
+	<option value="5.375">5.5"</option>
+	<option value="6">6.0"/150mm</option>
+	<option value="7.825">8.0"</option>
+</select>
+
+<br>Bit size<br>
+<select name="Bitsize" onchange="updateOut()">
+	<option value="0.0625">1/16"</option>
+	<option value="0.09375">3/32"</option>
+	<option selected="selected" value=".125">1/8"</option>
+</select>
+<br>Slot width<br>
+<input name="w" type="number" value="0.125"/>
+<select name="wun" onchange="updateOut()">
+	<option selected="selected" value="1">in</option>
+	<option value="0.015625">in/64</option>
+	<option value="0.03937007874">mm</option>
+	<option value="0.3937007874">cm</option>
+</select>
+<br>Slop (% extra for looser fit)<br>
+<input name="Slop" type="number" value="2" /> %
+<br><br><br>Rotate tube 
+<output name="Angle"></output>
+ degrees
+<br>
+</form>
+</span>
+</body>
+</html>
