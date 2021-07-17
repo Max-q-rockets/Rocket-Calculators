@@ -38,7 +38,7 @@ function updateOut(){
 	SF = 1+Slop/100;
 	rotate = 2*(Math.asin((Width*WidthUnit)/TubeSize)-Math.asin(BitSize/TubeSize))*180/Math.PI*SF;
 	IM = 1/10*Math.ceil(rotate*10);
-	out.value = IM.toFixed(2);
+	out.value = IM.toFixed(1);
 }
 </script>
 </head>
