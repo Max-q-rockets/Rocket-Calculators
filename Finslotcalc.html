@@ -37,7 +37,7 @@ function updateOut(){
 	var Slop=parseFloat(form.elements["Slop"].value);
 	SF = 1+Slop/100;
 	rotate = 2*(Math.asin((Width*WidthUnit)/TubeSize)-Math.asin(BitSize/TubeSize))*180/Math.PI*SF;
-	out.value = rotate.toFixed(2)
+	out.value = rotate.toFixed(1)
 }
 </script>
 </head>
