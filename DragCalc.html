@@ -89,10 +89,10 @@ function updatePort(){
 		var sizecalc = Math.sqrt(Scalc*4/3.141592654)*100;
 		break;
 		case 2:
-		var sizecalc = Math.sqrt(Scalc*4/3.141592654)*0.0254;
+		var sizecalc = Math.sqrt(Scalc*4/3.141592654)/0.0254;
 		break;
 		case 3:
-		var sizecalc = Math.sqrt(Scalc*4/3.141592654)*0.3048;
+		var sizecalc = Math.sqrt(Scalc*4/3.141592654)/0.3048;
 		break;
 		case 4:
 		var sizecalc = Scalc;
@@ -128,7 +128,7 @@ function updatePort(){
 <form id="dragcalc" oninput="updatePort()">
 <b>Parachute drag calculator</b>
 <br>Airspeed:<br>
-<input name="v" type="number"/>
+<input name="v" type="number" min="0"/>
 <output name="v_calc"></output>
 
 <select name="v_unit" onchange="updatePort()">
@@ -139,7 +139,7 @@ function updatePort(){
 	<option value="0.514444444444444">knot</option>
 </select>
 <br>Size:<br>
-<input name="size" type="number"/>
+<input name="size" type="number" min="0"/>
 <output name="size_calc"></output>
 <select name="size_unit" onchange="updatePort()">
 	<option value="0">m</option>
@@ -152,10 +152,10 @@ function updatePort(){
 	<option value="7">ft²</option>	
 </select>
 <br>Cd:<br>
-<input name="Cd" type="number"/>
+<input name="Cd" type="number" min="0"/>
 <output name="cd_calc"></output>
 <br>Force:<br>
-<input name="Force" type="number"/>
+<input name="Force" type="number" min="0"/>
 <output name="force_calc"></output>
 <select name="f_unit" onchange="updatePort()">
 	<option value="1">N</option>
@@ -164,7 +164,7 @@ function updatePort(){
 	<option value="4.4482189159">lb</option>
 </select>
 <br>Air density:<br>
-<input name="density" type="number" value="1.25"/>
+<input name="density" type="number" value="1.25"  min="0"/>
 <output name="density_calc"></output>
 <select name="d_unit" onchange="updatePort()">
 	<option value="1">kg/m³</option>
