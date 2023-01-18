@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/png"
+	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
+<head>
+<title>HTML parachute drag calculator</title>
+<style type="text/css">
+form {
+display:block; 
+border:1px solid #000000; 
+border-radius:5px; 
+min-width:1px; height:2.5in; 
+margin:5px; padding:10px;
+text-align:justify; 
+background:#e5e5e5; 
+color:#000000; 
+float:left; }
+
+input[type="number"] {
+border:1px solid #000000; 
+border-radius:3px;
+width:0.75in; height:.15in; 
+margin:2px; padding:2px;
+text-align:justify;}
+
+select{
+width:.5in; height:.22in;
+margin:3px; float:right;}
+
+output {
+border:1px solid #000000; 
+border-radius:3px;
+width:0.75in; height:.15in; 
+margin:2px; padding:2px;
+background:#f5f5f5; 
+text-align:justify;}
+
+</style>
+<script type="text/javascript">
+function updatePort(){
+	var form = document.getElementById("dragcalc");
+	var v_calc = form.elements["v_calc"];
+	var size_calc = form.elements["size_calc"];
+	var cd_calc = form.elements["cd_calc"];
+	var fc = form.elements["force_calc"];
+	var density_calc = form.elements["density_calc"];
+	var v=parseFloat(form.elements["v"].value)*parseFloat(form.elements["v_unit"].value);
+	var sizeraw = parseFloat(form.elements["size"].value)
+	var size_unit = parseInt(form.elements["size_unit"].value)
+	switch(size_unit){
+		case 0:
+		var S = 0.25*3.141592654*Math.pow(sizeraw, 2);
+		break;
+		case 1:
+		var S = 0.25*3.141592654*Math.pow(sizeraw/100, 2);
+		break;
+		case 2:
+		var S = 0.25*3.141592654*Math.pow(sizeraw*0.0254, 2);
+		break;
+		case 3:
+		var S = 0.25*3.141592654*Math.pow(sizeraw*0.3048, 2);
+		break;
+		case 4:
+		var S = sizeraw;
+		break;
+		case 5:
+		var S = sizeraw/10000;
+		break;
+		case 6:
+		var S = sizeraw/1550;
+		break;
+		case 7:
+		var S = sizeraw/10.7639;
+		break;
+	}
+	var Cd=parseFloat(form.elements["Cd"].value);
+	var Force=parseFloat(form.elements["Force"].value)*parseFloat(form.elements["f_unit"].value);
+	var density=parseFloat(form.elements["density"].value)*parseFloat(form.elements["d_unit"].value);
+	
+	
+	q = 0.5*density*v*v;
+	vcalc = Math.sqrt(2*Force/(density*S*Cd))/parseFloat(form.elements["v_unit"].value);
+    Scalc = Force/(q*Cd);
+        switch(size_unit){
+		case 0:
+		var sizecalc = Math.sqrt(Scalc*4/3.141592654);
+		break;
+		case 1:
+		var sizecalc = Math.sqrt(Scalc*4/3.141592654)*100;
+		break;
+		case 2:
+		var sizecalc = Math.sqrt(Scalc*4/3.141592654)*0.0254;
+		break;
+		case 3:
+		var sizecalc = Math.sqrt(Scalc*4/3.141592654)*0.3048;
+		break;
+		case 4:
+		var sizecalc = Scalc;
+		break;
+		case 5:
+		var sizecalc = Scalc*10000;
+		break;
+		case 6:
+		var sizecalc = Scalc*1550;
+		break;
+		case 7:
+		var sizecalc = Scalc*10.7639;
+		break;
+	}
+    Cdcalc = Force/(q*S);
+	forcecalc = q*S*Cd/parseFloat(form.elements["f_unit"].value);
+    densitycalc = 2*Force/(v*v*S)/parseFloat(form.elements["d_unit"].value);
+    
+    
+    
+    
+    
+    v_calc.value = vcalc.toFixed(3);
+    size_calc.value = sizecalc.toFixed(3);
+    cd_calc.value = Cdcalc.toFixed(3);
+	fc.value = forcecalc.toFixed(3);
+    density_calc.value = densitycalc.toFixed(3);
+}
+</script>
+</head>
+<body>
+<span style="font-family: Helvetica;">
+<form id="dragcalc" oninput="updatePort()">
+<b>Parachute drag calculator</b>
+<br>Airspeed:<br>
+<input name="v" type="number"/>
+<output name="v_calc"></output>
+
+<select name="v_unit" onchange="updatePort()">
+	<option value="1">m/s</option>
+	<option value="0.44704">mi/hr</option>
+	<option value="0.3048">ft/s</option>
+	<option value="0.27777777777777778">km/hr</option>
+	<option value="0.514444444444444">knot</option>
+</select>
+<br>Nominal size:<br>
+<input name="size" type="number"/>
+<output name="size_calc"></output>
+<select name="size_unit" onchange="updatePort()">
+	<option value="0">m</option>
+	<option value="1">cm</option>
+	<option value="2">in</option>
+	<option value="3">ft</option>
+	<option value="4">m²</option>
+	<option value="5">cm²</option>
+	<option value="6">in²</option>
+	<option value="7">ft²</option>	
+</select>
+<br>Cd:<br>
+<input name="Cd" type="number"/>
+<output name="cd_calc"></output>
+<br>Force:<br>
+<input name="Force" type="number"/>
+<output name="force_calc"></output>
+<select name="f_unit" onchange="updatePort()">
+	<option value="1">N</option>
+	<option value="9.81">Kgf</option>
+	<option value="9810">gf</option>
+	<option value="4.4482189159">lb</option>
+</select>
+<br>Air density:<br>
+<input name="density" type="number" value="1.25"/>
+<output name="density_calc"></output>
+<select name="d_unit" onchange="updatePort()">
+	<option value="1">kg/m³</option>
+	<option value="515.379">slug/ft³</option>
+	<option value="16.0185">lb/ft³</option>
+</select>
+<br>
+</form>
+</span>
+</body>
+</html>
