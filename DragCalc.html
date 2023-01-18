@@ -109,7 +109,7 @@ function updatePort(){
 	}
     Cdcalc = Force/(q*S);
 	forcecalc = q*S*Cd/parseFloat(form.elements["f_unit"].value);
-    densitycalc = 2*Force/(v*v*S)/parseFloat(form.elements["d_unit"].value);
+    densitycalc = 2*Force/(v*v*S*Cd)/parseFloat(form.elements["d_unit"].value);
     
     
     
