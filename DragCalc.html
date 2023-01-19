@@ -72,6 +72,9 @@ function updatePort(){
 		case 7:
 		var S = sizeraw/10.7639;
 		break;
+		case 8:
+		var S = sizeraw*.836127;
+		break;
 	}
 	var Cd=parseFloat(form.elements["Cd"].value);
 	var Force=parseFloat(form.elements["Force"].value)*parseFloat(form.elements["f_unit"].value);
@@ -105,6 +108,9 @@ function updatePort(){
 		break;
 		case 7:
 		var sizecalc = Scalc*10.7639;
+		break;
+		case 8:
+		var S = sizeraw/.836127;
 		break;
 	}
     Cdcalc = Force/(q*S);
@@ -149,7 +155,8 @@ function updatePort(){
 	<option value="4">m²</option>
 	<option value="5">cm²</option>
 	<option value="6">in²</option>
-	<option value="7">ft²</option>	
+	<option value="7">ft²</option>
+	<option value="7">yd²</option>	
 </select>
 <br>Cd:<br>
 <input name="Cd" type="number" min="0"/>
