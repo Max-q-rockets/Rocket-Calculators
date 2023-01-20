@@ -107,7 +107,7 @@ margin:3px; }
 <form id="EjectCalc" oninput="updateOut()">
 <b>Ejection Charge Calculator V2.5</b>
 <br>Pressurized length:<br>
-<input name="len" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="len" type="number" value="0" min="0"/>
 <select name="lnun" onchange="updateOut()">
 	<option value="0.001">mm</option>
 	<option selected="selected" value=".01">cm</option>
@@ -117,7 +117,7 @@ margin:3px; }
 </select>
 
 <br>Pressurized diameter:<br>
-<input name="diam" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="diam" type="number" value="0" min="0"/>
 <select name="diun" onchange="updateOut()">
 	<option value="0.001">mm</option>
 	<option selected="selected" value=".01">cm</option>
@@ -127,7 +127,7 @@ margin:3px; }
 </select>
 
 <br>Launch site altitude (ASL):<br>
-<input name="elev" type="number" value="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="elev" type="number" value="0"/>
 <select name="elevun" onchange="updateOut()">
 	<option selected="selected" value="1">m</option>
 	<option value="1000">km</option>
@@ -137,7 +137,7 @@ margin:3px; }
 </select>
 
 <br>Apogee (AGL):<br>
-<input name="alt" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="alt" type="number" value="0" min="0"/>
 <select name="alun" onchange="updateOut()">
 	<option selected="selected" value="1">m</option>
 	<option value="1000">km</option>
@@ -147,7 +147,7 @@ margin:3px; }
 </select>
 
 <br>Friction force:<br>
-<input name="Fric" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="Fric" type="number" value="0" min="0"/>
 <select name="Frun" onchange="updateOut()">
 	<option value="4.4482">lb</option>
 	<option selected="selected" value="1">N</option>
@@ -156,7 +156,7 @@ margin:3px; }
 </select>
 
 <br>Shear pin number and type:<br>
-<input name="Pin" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="Pin" type="number" value="0" min="0"/>
 <select name="Pintype" onchange="updateOut()">
 	<option selected="selected" value=".0005677">0-80</option>
 	<option value=".00075">M2</option>
@@ -170,7 +170,7 @@ margin:3px; }
 <br><strong><output name="pinGood"></output></strong>
 
 <br><br>Ejection Component mass:<br>
-<input name="MEject" type="number" value="0" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="MEject" type="number" value="0" min="0"/>
 <select name="MUnit" onchange="updateOut()">
 	<option selected="selected" value="1">kg</option>
 	<option value=".001">g</option>
@@ -180,7 +180,7 @@ margin:3px; }
 </select>
 
 <br>Coupler Shoulder Length:<br>
-<input name="CoupLen" type="number" value="" placeholder="assumes 1 cal if blank" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="CoupLen" type="number" value="" placeholder="assumes 1 cal if blank" min="0"/>
 <select name="CLun" onchange="updateOut()">
 	<option value="0.001">mm</option>
 	<option selected="selected" value=".01">cm</option>
@@ -190,7 +190,7 @@ margin:3px; }
 </select>
 
 <br>Desired Ejection Velocity:<br>
-<input name="VEject" type="number" value="4" min="0" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="VEject" type="number" value="4" min="0"/>
 <select name="VEun" onchange="updateOut()">
 	<option selected="selected" value="1">m/s</option>
 	<option value="0.277777777778">km/hr</option>
@@ -199,7 +199,7 @@ margin:3px; }
 </select>
 
 <br>Safety Factor:<br>
-<input name="SF" type="number" step="0.001" min="1" value="1.5" oninput="this.value=(this.value   < Number(this.min))  ? '' : this.value;"/>
+<input name="SF" type="number" step="0.001" min="1" value="1.5"/>
 
 <br><br><strong><output name="ChargeSize"></output></strong>
 
