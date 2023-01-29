@@ -130,10 +130,28 @@ function updatePort(){
 function updateRho(){
 	var form = document.getElementById("dragcalc");
 	var Elev = parseFloat(form.elements["Elev"].value)*parseFloat(form.elements["Elev_unit"].value);
+	var TempRaw = parseFloat(form.elements["Temp"].value)
+	var TempUnit = parseInt(form.elements["Temp_unit"].value)
+	switch(TempUnit){
+		case 1:
+		var Temp = 5/9*(TempRaw+459.67);
+		break;
+		case 2:
+		var Temp = TempRaw+273.15;
+		break;
+		case 3:
+		var Temp = TempRaw
+		break;
+	}
 	var Rho = form.elements["rho"];
 	var RhoUnit = parseFloat(form.elements["rho_unit"].value);
 	A = 1-0.0065*Elev/288;
-	Rhocalc = 101325*Math.pow(A, 5.2561)/(287*(288-6.5*Elev/1000));
+	if(isNaN(TempRaw)){
+		Rhocalc = 101325*Math.pow(A, 5.2561)/(287*(288-6.5*Elev/1000));
+	}
+	else{
+		Rhocalc = 101325*Math.pow(A, 5.2561)/(287*Temp);
+	}
 	Rho1 = Rhocalc/RhoUnit;
 	Rho.value = Rho1.toFixed(3);
 		
@@ -204,8 +222,14 @@ function updateRho(){
 	<option value="1000">km</option>
 	<option value="1609">mi</option>
 </select>
-<br>
-<br>
+<br>Temperature:<br>
+<input name="Temp" type="number" onchange="updateRho()"/>
+<select name="Temp_unit" onchange="updateRho()">
+	<option value="1">°F</option>
+	<option value="2">°C</option>
+	<option value="3">K</option>
+</select>
+<br><br>
 Air density:
 <br>
 <output name="rho"></output>
