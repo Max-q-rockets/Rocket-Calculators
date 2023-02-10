@@ -35,6 +35,10 @@ margin:3px; padding:2px;
 background:#f5f5f5; 
 text-align:justify;}
 
+div{
+	padding-top: 10px;
+}
+
 </style>
 <script type="text/javascript">
 function updatePort(){
@@ -44,6 +48,8 @@ function updatePort(){
 	var cd_calc = form.elements["cd_calc"];
 	var fc = form.elements["force_calc"];
 	var density_calc = form.elements["density_calc"];
+	var OS = form.elements["OS"];
+	var OSunit = form.elements["OSunit"];
 	var v=parseFloat(form.elements["v"].value)*parseFloat(form.elements["v_unit"].value);
 	var sizeraw = parseFloat(form.elements["size"].value)
 	var size_unit = parseInt(form.elements["size_unit"].value)
@@ -116,6 +122,9 @@ function updatePort(){
     Cdcalc = Force/(q*S);
 	forcecalc = q*S*Cd/parseFloat(form.elements["f_unit"].value);
     densitycalc = 2*Force/(v*v*S*Cd)/parseFloat(form.elements["d_unit"].value);
+    LoadingFactor = Force/(Cd*S);
+    x1 = 1-1.5*Math.pow(1.5, -Math.pow(LoadingFactor, 2))-1.11*Math.pow(1.022, -Math.pow(-LoadingFactor, 0.5831));
+    OpeningShock = Cd*S*q*1.7*x1/parseFloat(form.elements["OSunit"].value);
     
     
     
@@ -126,6 +135,7 @@ function updatePort(){
     cd_calc.value = Cdcalc.toFixed(3);
 	fc.value = forcecalc.toFixed(3);
     density_calc.value = densitycalc.toFixed(3);
+    OS.value = OpeningShock.toFixed(3);
 }
 function updateRho(){
 	var form = document.getElementById("dragcalc");
@@ -162,7 +172,7 @@ function updateRho(){
 <span style="font-family: Helvetica;">
 <form id="dragcalc" oninput="updatePort()">
 <b>Parachute drag calculator v1.1</b>
-<br>Airspeed:<br>
+<br>Air speed:<br>
 <input name="v" type="number" min="0"/>
 <output name="v_calc"></output>
 
@@ -207,6 +217,14 @@ function updateRho(){
 	<option value="515.379">slug/ft³</option>
 	<option value="16.0185">lb/ft³</option>
 </select>
+<br>Approx opening force:<br>
+<div><output name="OS"></output>
+<select name="OSunit" onchange="updatePort()"></div>
+	<option value="1">N</option>
+	<option value="9.81">Kgf</option>
+	<option value="0.00981">gf</option>
+	<option value="4.4482189159">lb</option>
+</select>
 <br>
 <br>
 <br>
@@ -232,14 +250,12 @@ function updateRho(){
 <br><br>
 Air density:
 <br>
-<output name="rho"></output>
+<div><output name="rho"></output>
 <select name="rho_unit" onchange="updateRho()">
 	<option value="1">kg/m³</option>
 	<option value="515.379">slug/ft³</option>
 	<option value="16.0185">lb/ft³</option>
-</select>
-<br>
-<br>
+</select></div>
 </form>
 </span>
 </body>
