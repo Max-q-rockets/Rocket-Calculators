@@ -123,7 +123,7 @@ function updatePort(){
 	forcecalc = q*S*Cd/parseFloat(form.elements["f_unit"].value);
     densitycalc = 2*Force/(v*v*S*Cd)/parseFloat(form.elements["d_unit"].value);
     LoadingFactor = Force/(Cd*S);
-    x1 = 1-1.5*Math.pow(1.5, -Math.pow(LoadingFactor, 2))-1.11*Math.pow(1.022, -Math.pow(-LoadingFactor, 0.5831));
+    x1 = 1-Math.pow(1.009, -Math.pow(LoadingFactor, 0.7059));
     OpeningShock = Cd*S*q*1.7*x1/parseFloat(form.elements["OSunit"].value);
     
     
