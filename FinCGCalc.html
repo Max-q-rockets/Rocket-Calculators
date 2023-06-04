@@ -31,12 +31,17 @@ margin:3px; }
 function updatePort(){
 	var form = document.getElementById("portcalc");
 	var out = form.elements["CG"];
+	var QCangle = form.elements["QC"];
 	var RootChord=parseFloat(form.elements["RC"].value);
 	var TipChord=parseFloat(form.elements["TC"].value);
 	var Height=parseFloat(form.elements["H"].value);
 	var Sweep=parseFloat(form.elements["SW"].value);
 	CGnd = (2*TipChord*Sweep+TipChord*TipChord+Sweep*RootChord+TipChord*RootChord+RootChord*RootChord)/(3*RootChord*(RootChord+TipChord));
 	out.value = CGnd.toFixed(3);
+	RQC = RootChord/4;
+	TQC = TipChord/4+Sweep;
+	QCX = TQC-RQC;
+	QCangle.value = (57.296*Math.atan(QCX/Height)).toFixed(1);
 }
 </script>
 </head>
@@ -56,6 +61,10 @@ function updatePort(){
 <br><br><br>CG at 
 <output name="CG"></output>
 <br>
+<br>
+Quarter-Chord sweep angle:
+<br>
+<output name="QC"></output>°
 </form>
 </span>
 </body>
