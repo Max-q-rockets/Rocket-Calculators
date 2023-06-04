@@ -41,7 +41,7 @@ div{
 
 </style>
 <script type="text/javascript">
-function updatePort(){
+function updateInfo(){
 	var form = document.getElementById("dragcalc");
 	var v_calc = form.elements["v_calc"];
 	var size_calc = form.elements["size_calc"];
@@ -170,13 +170,13 @@ function updateRho(){
 </head>
 <body>
 <span style="font-family: Helvetica;">
-<form id="dragcalc" oninput="updatePort()">
+<form id="dragcalc" oninput="updateInfo()">
 <b>Parachute drag calculator v1.1</b>
 <br>Air speed:<br>
 <input name="v" type="number" min="0"/>
 <output name="v_calc"></output>
 
-<select name="v_unit" onchange="updatePort()">
+<select name="v_unit" onchange="updateInfo()">
 	<option value="1">m/s</option>
 	<option value="0.44704">mi/hr</option>
 	<option value="0.3048">ft/s</option>
@@ -186,7 +186,7 @@ function updateRho(){
 <br>Size:<br>
 <input name="size" type="number" min="0"/>
 <output name="size_calc"></output>
-<select name="size_unit" onchange="updatePort()">
+<select name="size_unit" onchange="updateInfo()">
 	<option value="0">m</option>
 	<option value="1">cm</option>
 	<option value="2">in</option>
@@ -203,7 +203,7 @@ function updateRho(){
 <br>Force:<br>
 <input name="Force" type="number" min="0"/>
 <output name="force_calc"></output>
-<select name="f_unit" onchange="updatePort()">
+<select name="f_unit" onchange="updateInfo()">
 	<option value="1">N</option>
 	<option value="9.81">Kgf</option>
 	<option value="0.00981">gf</option>
@@ -212,14 +212,14 @@ function updateRho(){
 <br>Air density:<br>
 <input name="density" type="number" value="1.25"  min="0"/>
 <output name="density_calc"></output>
-<select name="d_unit" onchange="updatePort()">
+<select name="d_unit" onchange="updateInfo()">
 	<option value="1">kg/m³</option>
 	<option value="515.379">slug/ft³</option>
 	<option value="16.0185">lb/ft³</option>
 </select>
 <br>Approx opening force:<br>
 <div><output name="OS"></output>
-<select name="OSunit" onchange="updatePort()"></div>
+<select name="OSunit" onchange="updateInfo()"></div>
 	<option value="1">N</option>
 	<option value="9.81">Kgf</option>
 	<option value="0.00981">gf</option>
