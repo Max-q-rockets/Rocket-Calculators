@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/png"
+	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
+<head>
+<title>Ejection charge Calculator V2.5</title>
+<meta name="viewport" content="width=1000, initial-scale=1.3">
+<style type="text/css">
+form {
+display:block; 
+border:1px solid #000000; 
+border-radius:5px; 
+min-width:2.25in; 
+margin:5px; padding:10px;
+text-align:justify; 
+background:#e5e5e5; 
+color:#000000; 
+float:left; }
+
+input[type="number"] {
+border:1px solid #000000; 
+border-radius:3px;
+width:1.75in; height:.15in; 
+margin:2px; padding:2px;
+text-align:justify;}
+select{
+width:.55in; height:.2in;
+margin:3px; }
+</style>
+<script type="text/javascript">
+	function PfromAlt(alt){return (101325+alt*13.06+alt*alt*0.0007354+alt*alt*alt*alt*0.000000000000602)*Math.exp(-0.0002465*alt);}
+	function updateOut(){
+		const pi = 3.141592653589;
+		const G = 9.807;
+		const NylSSmax = 80000000;
+		const NylSSmin = 65000000;
+		var form = document.getElementById("EjectCalc");
+		var Charge = form.elements["ChargeSize"];
+		var PinGood = form.elements["pinGood"];
+		var plength=parseFloat(form.elements["len"].value) * parseFloat(form.elements["lnun"].value);
+		var pradius=parseFloat(form.elements["diam"].value) * parseFloat(form.elements["diun"].value)*0.5;
+		var LSElev=parseFloat(form.elements["elev"].value) * parseFloat(form.elements["elevun"].value);
+		var Alt=parseFloat(form.elements["alt"].value) * parseFloat(form.elements["alun"].value);
+		var Frun = parseFloat(form.elements["Frun"].value);
+		var Fric=parseFloat(form.elements["Fric"].value) * Frun;
+		var PinNum=parseInt(form.elements["Pin"].value)
+		var PinRad=parseFloat(form.elements["Pintype"].value);
+		var MEject=parseFloat(form.elements["MEject"].value) * parseFloat(form.elements["MUnit"].value);
+		if (isNaN(MEject)){MEject=0;}
+		var CoupLen=parseFloat(form.elements["CoupLen"].value) * parseFloat(form.elements["CLun"].value);
+		if (isNaN(CoupLen)) {CoupLen = 2*pradius;}
+		var VEject=parseFloat(form.elements["VEject"].value) * parseFloat(form.elements["VEun"].value);
+		var SF = parseFloat(form.elements["SF"].value);
+		var Area = pradius*pradius*pi;
+		var PaGL = PfromAlt(LSElev);
+		var PaAp = PfromAlt(Alt+LSElev);
+		var DP = PaGL-PaAp;
+		var Pforce = DP*Area;
+		var Efinal=0.5*MEject*VEject*VEject;
+		if (isNaN(PinNum) && isNaN(Fric) || PinNum == 0 && isNaN(Fric) || isNaN(PinNum) && Fric == 0 || PinNum == 0 && Fric == 0)
+		{
+			var check = false;
+			var Fric = 1.2*Pforce;
+		}
+		else {var check = true;}
+		var PinForcemax = PinNum*pi*PinRad*PinRad*NylSSmax;
+		var PinForcemin = PinNum*pi*PinRad*PinRad*NylSSmin;
+		var EFric=CoupLen*Fric;
+		var EPin= pi*PinRad*PinRad*PinRad*NylSSmax;
+		var Etotal=Efinal+EFric+EPin;
+		var StaticSepForce = Fric+PinForcemax;
+		var StaticSepForceMin = Fric+PinForcemin;
+		var DynamicSepForce = Etotal/CoupLen;
+		if (check)
+		{
+			if (PinNum==1){PinGood.value = "You need at least 2 shear pins.";}
+			else if (Pforce < 0.85*StaticSepForceMin){PinGood.value = "Good shear pin choice.";}
+			else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
+			else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice.";}
+		}
+		else
+		{
+			var output = Pforce/Frun;
+			if (isNaN(output)){PinGood.value = "";}
+			else if(Frun == 1){PinGood.value = Pforce.toFixed(0) + " N at apogee";}
+			else if(Frun == 4.4482){PinGood.value = output.toFixed(1) + " Lb at apogee";}
+			else if(Frun == .00980665){PinGood.value = output.toFixed(0) + " gf at apogee";}
+			else if(Frun == 9.80665){PinGood.value = output.toFixed(1)+ " Kgf at apogee";}
+		}
+		var SepForce = Math.pow((StaticSepForce*StaticSepForce+DynamicSepForce*DynamicSepForce), 0.5);
+		var Vol = Area*plength;
+		var Pjection = SepForce/Area;
+		Chg = (SF*Pjection*Vol*.00457).toFixed(3);
+		
+		if(Chg < 1000){
+			Charge.value = " Use " + Chg + " grams of black powder.";
+		} else if (isNaN(Chg)){
+			Charge.value = "";
+		} else {
+			Charge.value = " Unrealistic Input: " + Chg + " grams";
+		}
+		
+	}
+	
+</script>
+<body>
+<span style="font-family: Helvetica;">
+<form id="EjectCalc" oninput="updateOut()">
+<b>Ejection Charge Calculator V2.5</b>
+<br>Pressurized length:<br>
+<input name="len" type="number" value="0" min="0"/>
+<select name="lnun" onchange="updateOut()">
+	<option value="0.001">mm</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
+</select>
+
+<br>Pressurized diameter:<br>
+<input name="diam" type="number" value="0" min="0"/>
+<select name="diun" onchange="updateOut()">
+	<option value="0.001">mm</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
+</select>
+
+<br>Launch site altitude (ASL):<br>
+<input name="elev" type="number" value="0"/>
+<select name="elevun" onchange="updateOut()">
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="0.3408">ft</option>
+	<option value="340.8">kft</option>
+	<option value="1609.34">mi</option>
+</select>
+
+<br>Apogee (AGL):<br>
+<input name="alt" type="number" value="0" min="0"/>
+<select name="alun" onchange="updateOut()">
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="0.3408">ft</option>
+	<option value="340.8">kft</option>
+	<option value="1609.34">mi</option>
+</select>
+
+<br>Friction force:<br>
+<input name="Fric" type="number" value="0" min="0"/>
+<select name="Frun" onchange="updateOut()">
+	<option value="4.4482">lb</option>
+	<option selected="selected" value="1">N</option>
+	<option value=".00980665">g f</option>
+	<option value="9.80665">kg f</option>
+</select>
+
+<br>Shear pin number and type:<br>
+<input name="Pin" type="number" value="0" min="0"/>
+<select name="Pintype" onchange="updateOut()">
+	<option selected="selected" value=".0005677">0-80</option>
+	<option value=".00075">M2</option>
+	<option value=".0008141">2-56</option>
+	<option value=".000974">M2.5</option>
+	<option value=".0010316">4-40</option>
+	<option value=".0011935">M3</option>
+	<option value=".0012662">6-32</option>
+</select>
+
+<br><strong><output name="pinGood"></output></strong>
+
+<br><br>Ejection Component mass:<br>
+<input name="MEject" type="number" value="0" min="0"/>
+<select name="MUnit" onchange="updateOut()">
+	<option selected="selected" value="1">kg</option>
+	<option value=".001">g</option>
+	<option value=".4536">lb</option>
+	<option value=".0283">oz</option>
+	<option value="14.5939">slug</option>
+</select>
+
+<br>Coupler Shoulder Length:<br>
+<input name="CoupLen" type="number" value="" placeholder="assumes 1 cal if blank" min="0"/>
+<select name="CLun" onchange="updateOut()">
+	<option value="0.001">mm</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
+</select>
+
+<br>Desired Ejection Velocity:<br>
+<input name="VEject" type="number" value="4" min="0"/>
+<select name="VEun" onchange="updateOut()">
+	<option selected="selected" value="1">m/s</option>
+	<option value="0.277777777778">km/hr</option>
+	<option value="0.44704">mi/hr</option>
+	<option value="0.3408">ft/s</option>
+</select>
+
+<br>Safety Factor:<br>
+<input name="SF" type="number" step="0.001" min="1" value="1.5"/>
+
+<br><br><strong><output name="ChargeSize"></output></strong>
+
+</form>
+</span>
+</body>
+<br>
+<title>HTML Static Port Hole Calculator V1</title>
+<meta name="viewport" content="width=1000, initial-scale=1.3">
+<style type="text/css">
+form {
+display:block; 
+border:1px solid #000000; 
+border-radius:5px; 
+min-width:25px; 
+margin:5px; padding:10px;
+text-align:justify; 
+background:#e5e5e5; 
+color:#000000; 
+float:left; }
+
+input[type="number"] {
+border:1px solid #000000; 
+border-radius:3px;
+width:1.5in; height:.15in; 
+margin:2px; padding:2px;
+text-align:justify;}
+select{
+width:.5in; height:.2in;
+margin:3px; }
+</style>
+<script type="text/javascript">
+function updatePort(){
+	const k=1.401;
+	const ChokeThresh=1.893532653;
+	const DischargeCoefficient=.62;
+	const g=9.80665;
+	const GasConstant=8.31432;
+	const LapseRate=-0.0065;
+	const ATM=101325;
+	const moleAir=0.0289645;
+	var form = document.getElementById("portcalc");
+	var out = form.elements["holesize"];
+	var alength=parseFloat(form.elements["avln"].value) * parseFloat(form.elements["lnun"].value);
+	var aradius=parseFloat(form.elements["avdi"].value) * parseFloat(form.elements["diun"].value)*5;
+	var numport=parseInt(form.elements["ports"].value);
+	var tempunit=parseInt(form.elements["tempun"].value);
+	switch(tempunit){
+		case 0:
+		var temp=parseFloat(form.elements["temp"].value);
+		temp = temp + 273.15;
+		break;
+		case 1:
+		var temp=((parseFloat(form.elements["temp"].value)) - 32) * 5/9 +273.15;
+		break;
+		case 2:
+		var temp=parseFloat(form.elements["temp"].value);
+		break;
+		case 3:
+		var temp=parseFloat(form.elements["temp"].value) * .555555555556;
+		break;
+	}
+	var lsalt=parseFloat(form.elements["alt"].value) * parseFloat(form.elements["alun"].value);
+	var vmax=parseFloat(form.elements["vel"].value) * parseFloat(form.elements["velun"].value);
+	var patlalt=ATM*Math.pow((temp/(temp+LapseRate*lsalt)),((g*moleAir)/(GasConstant*LapseRate)));
+	var AirDensity=(patlalt*moleAir)/(GasConstant*temp);
+	var atc1=(temp/(temp+LapseRate*(lsalt+1)));
+	var atc2=(g*moleAir)/(GasConstant*LapseRate);
+	var Atmpchange=(patlalt-ATM*(Math.pow(atc1, atc2)))/patlalt;
+	var PresEqRate=1/vmax;
+	var volume=alength*aradius*aradius*Math.PI;
+	var airMass=volume * AirDensity / (100^3);
+	var Q=airMass*Atmpchange*(vmax+1);	
+	var a1=Math.pow((1-Atmpchange), (2/k))-Math.pow((1-Atmpchange), ((k+1)/k));
+	var a2=2*AirDensity*patlalt*(k/(k-1));
+	var a3=Math.PI*numport*DischargeCoefficient;
+	var a4=4*Q;
+	var a5=Math.pow(a1*a2, .5);
+	var a6=a3 * a5;
+	var a7=a4/a6;
+	var answer=Math.pow(a7, .5);
+	var units=parseInt(form.elements["holeunits"].value);
+	switch(units){
+		case 0:
+		var size=(Math.ceil(answer*20))/20;
+		if (size < .35){
+			out.value=.35;
+		} else {
+			out.value=size;
+		}
+		break;
+		case 1:
+		var ans=answer/25.4;
+		var size=Math.ceil(ans*64);
+	
+		if (size % 64 == 0){
+			out.value=size/64;
+		} else if (size % 32 == 0){
+			out.value=size/32 + "/2";
+		} else if (size % 16 == 0){
+			out.value=size/16 + "/4";
+		} else if (size % 8 == 0){
+			out.value=size/8 + "/8";
+		} else if (size % 4 == 0){
+			out.value=size/4 + "/16";
+		} else if (size % 2 == 0){
+			out.value=size/2 + "/32";
+		} else {
+			out.value=size + "/64";
+		}
+		break;
+	}
+}
+</script>
+</head>
+<body>
+<span style="font-family: Helvetica;">
+<form id="portcalc" oninput="updatePort()">
+<b>PORT HOLE CALCULATOR</b>
+<br>Av-bay length:<br>
+<input name="avln" type="number" value="0"/>
+<select name="lnun" onchange="updatePort()">
+	<option value="0.1">mm</option>
+	<option selected="selected" value="1">cm</option>
+	<option value="100">m</option>
+	<option value="2.54">in</option>
+	<option value="30.48">ft</option>
+</select>
+<br>Av-bay diameter:<br>
+<input name="avdi" type="number" value="0"/>
+<select name="diun" onchange="updatePort()">
+	<option value="0.1">mm</option>
+	<option selected="selected" value="1">cm</option>
+	<option value="100">m</option>
+	<option value="2.54">in</option>
+	<option value="30.48">ft</option>
+</select>
+<br>Number of port holes:<br>
+<input name="ports" type="number" value="3"/><br>
+
+<br>Optional info:
+<br>Highest launch temp:<br>
+<input name="temp" type="number" value="20"/>
+<select name="tempun" onchange="updatePort()">
+	<option value="0">C</option>
+	<option value="1">F</option>
+	<option value="2">K</option>
+	<option value="3">R</option>
+</select>
+<br><span title="(Optional) Defaults to sea level">Launch site altitude (ASL):</span><br>
+<input name="alt" type="number" value="0"/>
+<select name="alun" onchange="updatePort()">
+	<option value="0.3408">ft</option>
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="1609.34">mi</option>
+</select>
+<br>Maximum velocity:<br>
+<input name="vel" type="number" value="200"/>
+<select name="velun" onchange="updatePort()">
+	<option value="0.3408">ft/s</option>
+	<option selected="selected" value="1">m/s</option>
+	<option value="0.277777777778">km/h</option>
+	<option value="0.44704">mi/h</option>
+	<option value="340">mach</option>
+</select>
+<br><br><br>Use
+<output name="holesize"></output>
+<select name="holeunits" onchange="updatePort()">
+	<option value="0">mm</option>
+	<option value="1">in</option>
+</select>
+static ports<br>
+</form>
+</span>
+</body>
+</html>
