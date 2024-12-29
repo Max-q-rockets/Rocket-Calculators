@@ -163,7 +163,15 @@ function updateRho(){
 		Rhocalc = 101325*Math.pow(A, 5.2561)/(287*Temp);
 	}
 	Rho1 = Rhocalc/RhoUnit;
-	Rho.value = Rho1.toFixed(3);
+	if(RhoUnit > 100){
+		Rho.value = Rho1.toFixed(6);
+	}
+	else if(RhoUnit >10){
+		Rho.value = Rho1.toFixed(4);
+	}
+	else{
+		Rho.value = Rho1.toFixed(3);
+	}
 		
 }
 </script>
