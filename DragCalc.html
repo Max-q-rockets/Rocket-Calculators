@@ -84,7 +84,8 @@ function updateInfo(){
 	}
 	var Cd=parseFloat(form.elements["Cd"].value);
 	var Force=parseFloat(form.elements["Force"].value)*parseFloat(form.elements["f_unit"].value);
-	var density=parseFloat(form.elements["density"].value)*parseFloat(form.elements["d_unit"].value);
+	var dunit = parseFloat(form.elements["d_unit"].value);
+	var density=parseFloat(form.elements["density"].value)*dunit;
 	
 	
 	q = 0.5*density*v*v;
@@ -119,23 +120,31 @@ function updateInfo(){
 		var sizecalc = Scalc/.836127;
 		break;
 	}
-    Cdcalc = Force/(q*S);
+	Cdcalc = Force/(q*S);
 	forcecalc = q*S*Cd/parseFloat(form.elements["f_unit"].value);
-    densitycalc = 2*Force/(v*v*S*Cd)/parseFloat(form.elements["d_unit"].value);
-    LoadingFactor = Force/(Cd*S);
-    x1 = 1-Math.pow(1.009, -Math.pow(LoadingFactor, 0.7059));
-    OpeningShock = Cd*S*q*1.7*x1/parseFloat(form.elements["OSunit"].value);
+	densitycalc = 2*Force/(v*v*S*Cd)/parseFloat(form.elements["d_unit"].value);
+	LoadingFactor = Force/(Cd*S);
+	x1 = 1-Math.pow(1.009, -Math.pow(LoadingFactor, 0.7059));
+	OpeningShock = Cd*S*q*1.7*x1/parseFloat(form.elements["OSunit"].value);
     
     
     
     
     
-    v_calc.value = vcalc.toFixed(3);
-    size_calc.value = sizecalc.toFixed(3);
-    cd_calc.value = Cdcalc.toFixed(3);
+	v_calc.value = vcalc.toFixed(3);
+	size_calc.value = sizecalc.toFixed(3);
+	cd_calc.value = Cdcalc.toFixed(3);
 	fc.value = forcecalc.toFixed(3);
-    density_calc.value = densitycalc.toFixed(3);
-    OS.value = OpeningShock.toFixed(3);
+	if(dunit > 100){
+		density_calc.value = densitycalc.toFixed(6);
+	}
+	else if(dunit >10){
+		density_calc.value = densitycalc.toFixed(4);
+	}
+	else{
+		density_calc.value = densitycalc.toFixed(3);
+	}
+	OS.value = OpeningShock.toFixed(3);
 }
 function updateRho(){
 	var form = document.getElementById("dragcalc");
