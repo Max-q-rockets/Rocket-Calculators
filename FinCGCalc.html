@@ -28,10 +28,11 @@ width:.5in; height:.2in;
 margin:3px; }
 </style>
 <script type="text/javascript">
-function updatePort(){
+function updateOut(){
 	var form = document.getElementById("portcalc");
 	var out = form.elements["CG"];
 	var QCangle = form.elements["QC"];
+ var MachNum = form.elements["MN"];
 	var RootChord=parseFloat(form.elements["RC"].value);
 	var TipChord=parseFloat(form.elements["TC"].value);
 	var Height=parseFloat(form.elements["H"].value);
@@ -42,6 +43,7 @@ function updatePort(){
 	TQC = TipChord/4+Sweep;
 	QCX = TQC-RQC;
 	QCangle.value = (57.296*Math.atan(QCX/Height)).toFixed(1);
+ MachNum.value = Math.sqrt(Sweep*Sweep+Height*Height)/Height;
 }
 </script>
 </head>
@@ -51,13 +53,13 @@ function updatePort(){
 <b>FIN CG CALCULATOR</b>
 <br>Give all specs in same unit<br>
 <br>Root chord:<br>
-<input name="RC" type="number" value="0" onchange="updatePort()"/>
+<input name="RC" type="number" value="0" onchange="updateOut()"/>
 <br>Tip chord:<br>
-<input name="TC" type="number" value="0" onchange="updatePort()"/>
+<input name="TC" type="number" value="0" onchange="updateOut()"/>
 <br>Height (semi-span):<br>
-<input name="H" type="number" value="0" onchange="updatePort()"/>
+<input name="H" type="number" value="0" onchange="updateOut()"/>
 <br>Sweep length:<br>
-<input name="SW" type="number" value="0" onchange="updatePort()"/>
+<input name="SW" type="number" value="0" onchange="updateOut()"/>
 <br><br><br>CG at 
 <output name="CG"></output>
 <br>
@@ -65,6 +67,11 @@ function updatePort(){
 Quarter-Chord sweep angle:
 <br>
 <output name="QC"></output>°
+<br>
+<br>
+Max Mach for subsonic LE:
+<br>
+<output name="MN"></output>
 </form>
 </span>
 </body>
