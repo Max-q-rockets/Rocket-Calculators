@@ -86,6 +86,7 @@ function updateInfo(){
 	var Force=parseFloat(form.elements["Force"].value)*parseFloat(form.elements["f_unit"].value);
 	var dunit = parseFloat(form.elements["d_unit"].value);
 	var density=parseFloat(form.elements["density"].value)*dunit;
+var CK=form.elements["CK"];
 	
 	
 	q = 0.5*density*v*v;
@@ -126,6 +127,7 @@ function updateInfo(){
 	LoadingFactor = Force/(Cd*S);
 	x1 = 1-Math.pow(1.009, -Math.pow(LoadingFactor, 0.7059));
 	OpeningShock = Cd*S*q*1.7*x1/parseFloat(form.elements["OSunit"].value);
+Ck = 1.7*x1;
     
     
     
@@ -243,6 +245,7 @@ function updateRho(){
 	<option value="4.4482189159">lb</option>
 </select>
 <br>
+Ck: <div><output name="CK"></output>
 <br>
 <br>
 <br>
