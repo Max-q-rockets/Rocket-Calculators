@@ -86,7 +86,7 @@ function updateInfo(){
 	var Force=parseFloat(form.elements["Force"].value)*parseFloat(form.elements["f_unit"].value);
 	var dunit = parseFloat(form.elements["d_unit"].value);
 	var density=parseFloat(form.elements["density"].value)*dunit;
-var CK=form.elements["CK"];
+	var CK=form.elements["CK"];
 	
 	
 	q = 0.5*density*v*v;
@@ -124,10 +124,14 @@ var CK=form.elements["CK"];
 	Cdcalc = Force/(q*S);
 	forcecalc = q*S*Cd/parseFloat(form.elements["f_unit"].value);
 	densitycalc = 2*Force/(v*v*S*Cd)/parseFloat(form.elements["d_unit"].value);
-	LoadingFactor = Force/(Cd*S);
+	MassRatio = density*Math.pow((Cd*S),1.5)/(Force/9.81);
+	Ck = 1.75/(5*Math.pow(MassRatio, 0.45)+1);
+	OpeningShock = Cd*S*q*Ck/parseFloat(form.elements["OSunit"].value);
+	CK.value = Ck.toPrecision(3);
+/*	LoadingFactor = Force/(Cd*S);
 	x1 = 1-Math.pow(1.009, -Math.pow(LoadingFactor, 0.7059));
 	OpeningShock = Cd*S*q*1.7*x1/parseFloat(form.elements["OSunit"].value);
-CK.value = (1.7*x1).toPrecision(3);
+CK.value = (1.7*x1).toPrecision(3);*/
     
     
     
@@ -151,7 +155,9 @@ CK.value = (1.7*x1).toPrecision(3);
 }
 function updateRho(){
 	var form = document.getElementById("dragcalc");
+	var Rho = form.elements["rho"];
 	var Elev = parseFloat(form.elements["Elev"].value)*parseFloat(form.elements["Elev_unit"].value);
+	var Alti = parseFloat(form.elements["alt"].value)*parseFloat(form.elements["Alt_unit"].value);
 	var TempRaw = parseFloat(form.elements["Temp"].value)
 	var TempUnit = parseInt(form.elements["Temp_unit"].value)
 	switch(TempUnit){
@@ -165,17 +171,32 @@ function updateRho(){
 		var Temp = TempRaw
 		break;
 	}
-	var Rho = form.elements["rho"];
 	var RhoUnit = parseFloat(form.elements["rho_unit"].value);
-	A = 1-0.0065*Elev/288;
+	if(isNaN(Alti)){Alti = 0;}
 	if(isNaN(TempRaw)){
+		Temp = 288;
+	}
+	Talt = Temp-.0065*(Alti);
+	Palt = 101325*Math.exp(-9.81*.028965*(Elev+Alti)/(8.314*Talt));
+	Rhocalc = Palt*.028965/(8.314*Talt);
+/*	if(isNaN(TempRaw)){
+		TSL = 288;
+		Temp = TSL-.0065*(Elev+Alti);
+	}
+	else{
+		TSL = Temp+.0065*Elev;
+	}
+	A = 1-0.0065*(Elev+Alti)/288;
+	Talt = Temp-.0065*Alti;
+	Rhocalc = 101325*Math.pow(A, 5.2561)/(287*Talt);
+	/*if(isNaN(TempRaw)){
 		Rhocalc = 101325*Math.pow(A, 5.2561)/(287*(288-6.5*Elev/1000));
 	}
 	else{
 		Rhocalc = 101325*Math.pow(A, 5.2561)/(287*Temp);
-	}
+	}*/
 	Rho1 = Rhocalc/RhoUnit;
-	if(RhoUnit > 100){
+	/*if(RhoUnit > 100){
 		Rho.value = Rho1.toFixed(6);
 	}
 	else if(RhoUnit >10){
@@ -183,7 +204,8 @@ function updateRho(){
 	}
 	else{
 		Rho.value = Rho1.toFixed(3);
-	}
+	}*/
+	Rho.value = Rho1.toPrecision(4);
 		
 }
 </script>
@@ -245,28 +267,36 @@ function updateRho(){
 	<option value="0.00981">gf</option>
 	<option value="4.4482189159">lb</option>
 </select>
-<br>
-Ck: <div><output name="CK"></output>
+<br>Ck:<SUP>&nbsp;</SUP><br>
+<div><output name="CK"></output>
 <br>
 <br>
 <br>
 <br>
 <span style="font-family: Helvetica;">
 <b>air density vs elevation</b>
-<br>Elevation above MSL:<br>
-<input name="Elev" type="number" onchange="updateRho()"/>
+<br>Ground level elevation MSL:<br>
+<input name="Elev" type="number" oninput="updateRho()"/>
 <select name="Elev_unit" onchange="updateRho()">
 	<option value="1">m</option>
 	<option value="0.3048">ft</option>
 	<option value="1000">km</option>
 	<option value="1609">mi</option>
 </select>
-<br>Temperature:<br>
-<input name="Temp" type="number" onchange="updateRho()"/>
+<br>Ground level temperature:<br>
+<input name="Temp" type="number" oninput="updateRho()"/>
 <select name="Temp_unit" onchange="updateRho()">
 	<option value="1">°F</option>
 	<option value="2">°C</option>
 	<option value="3">K</option>
+</select>
+<br>Chute altitude AGL:<br>
+<input name="alt" type="number" oninput="updateRho()"/>
+<select name="Alt_unit" onchange="updateRho()">
+	<option value="1">m</option>
+	<option value="0.3048">ft</option>
+	<option value="1000">km</option>
+	<option value="1609">mi</option>
 </select>
 <br><br>
 Air density:
