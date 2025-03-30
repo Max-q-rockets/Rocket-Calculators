@@ -48,7 +48,9 @@ function updateInfo(){
 	var cd_calc = form.elements["cd_calc"];
 	var fc = form.elements["force_calc"];
 	var density_calc = form.elements["density_calc"];
-	var OS = form.elements["OS"];
+	var OSx = form.elements["OSx"];
+	var OSv = form.elements["OSv"];
+	var OSn = form.elements["OSn"];
 	var OSunit = form.elements["OSunit"];
 	var v=parseFloat(form.elements["v"].value)*parseFloat(form.elements["v_unit"].value);
 	var sizeraw = parseFloat(form.elements["size"].value)
@@ -86,7 +88,9 @@ function updateInfo(){
 	var Force=parseFloat(form.elements["Force"].value)*parseFloat(form.elements["f_unit"].value);
 	var dunit = parseFloat(form.elements["d_unit"].value);
 	var density=parseFloat(form.elements["density"].value)*dunit;
-	var CK=form.elements["CK"];
+	var CKx=form.elements["CKx"];
+	var CKv=form.elements["CKv"];
+	var CKn=form.elements["CKn"];
 	
 	
 	q = 0.5*density*v*v;
@@ -125,9 +129,15 @@ function updateInfo(){
 	forcecalc = q*S*Cd/parseFloat(form.elements["f_unit"].value);
 	densitycalc = 2*Force/(v*v*S*Cd)/parseFloat(form.elements["d_unit"].value);
 	MassRatio = density*Math.pow((Cd*S),1.5)/(Force/9.81);
-	Ck = 1.75/(5*Math.pow(MassRatio, 0.45)+1);
-	OpeningShock = Cd*S*q*Ck/parseFloat(form.elements["OSunit"].value);
-	CK.value = Ck.toPrecision(3);
+	Ckx = 1.75/(5*Math.pow(MassRatio, 0.45)+1);
+	Ckv = 1.385/(10.4*Math.pow(MassRatio, 0.5281)+1);
+	Ckn = 1/(20*Math.pow(MassRatio, 0.55)+1);
+	OpeningShockmax = Cd*S*q*Ckx/parseFloat(form.elements["OSunit"].value);
+	OpeningShockexp = Cd*S*q*Ckv/parseFloat(form.elements["OSunit"].value);
+	OpeningShockmin = Cd*S*q*Ckn/parseFloat(form.elements["OSunit"].value);
+	CKx.value = Ckx.toPrecision(3);
+	CKv.value = Ckv.toPrecision(3);
+	CKn.value = Ckn.toPrecision(3);
 /*	LoadingFactor = Force/(Cd*S);
 	x1 = 1-Math.pow(1.009, -Math.pow(LoadingFactor, 0.7059));
 	OpeningShock = Cd*S*q*1.7*x1/parseFloat(form.elements["OSunit"].value);
@@ -151,7 +161,9 @@ CK.value = (1.7*x1).toPrecision(3);*/
 		density_calc.value = densitycalc.toFixed(3);
 	}*/
  density_calc.value = densitycalc.toPrecision(3);
-	OS.value = OpeningShock.toPrecision(5);
+	OSx.value = OpeningShockmax.toPrecision(3);
+	OSv.value = OpeningShockexp.toPrecision(3);
+	OSn.value = OpeningShockmin.toPrecision(3);
 }
 function updateRho(){
 	var form = document.getElementById("dragcalc");
@@ -259,8 +271,8 @@ function updateRho(){
 	<option value="515.379">slug/ft³</option>
 	<option value="16.0185">lb/ft³</option>
 </select>
-<br>Approx opening force:<br>
-<div><output name="OS"></output>
+<br>Approx opening force:<br>max   expected   min<br>
+<div><output name="OSx"></output><output name="OSv"></output><output name="OSn"></output>
 <select name="OSunit" onchange="updateInfo()"></div>
 	<option value="1">N</option>
 	<option value="9.81">Kgf</option>
@@ -268,7 +280,7 @@ function updateRho(){
 	<option value="4.4482189159">lb</option>
 </select>
 <br>Ck:<SUP>&nbsp;</SUP><br>
-<div><output name="CK"></output>
+<div><output name="CKx"></output><output name="CKv"></output><output name="CKn"></output>
 <br>
 <br>
 <br>
