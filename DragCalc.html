@@ -129,9 +129,9 @@ function updateInfo(){
 	forcecalc = q*S*Cd/parseFloat(form.elements["f_unit"].value);
 	densitycalc = 2*Force/(v*v*S*Cd)/parseFloat(form.elements["d_unit"].value);
 	MassRatio = density*Math.pow((Cd*S),1.5)/(Force/9.81);
-	Ckx = 1.75/(5*Math.pow(MassRatio, 0.45)+1);
+	Ckx = 1.75/(5.357*Math.pow(MassRatio, 0.454)+1);
 	Ckv = 1.385/(10.4*Math.pow(MassRatio, 0.5281)+1);
-	Ckn = 1/(20*Math.pow(MassRatio, 0.55)+1);
+	Ckn = 1/(14.95*Math.pow(MassRatio, 0.51)+1);
 	OpeningShockmax = Cd*S*q*Ckx/parseFloat(form.elements["OSunit"].value);
 	OpeningShockexp = Cd*S*q*Ckv/parseFloat(form.elements["OSunit"].value);
 	OpeningShockmin = Cd*S*q*Ckn/parseFloat(form.elements["OSunit"].value);
@@ -271,7 +271,7 @@ function updateRho(){
 	<option value="515.379">slug/ft³</option>
 	<option value="16.0185">lb/ft³</option>
 </select>
-<br>Approx opening force:<br>max   expected   min<br>
+<br>Approx opening force:<br><a href="https://max-q-rockets.github.io/Rocket-Calculators/OpeningShockFunctions.svg">max   expected   min</a><br>
 <div><output name="OSx"></output><output name="OSv"></output><output name="OSn"></output>
 <select name="OSunit" onchange="updateInfo()"></div>
 	<option value="1">N</option>
