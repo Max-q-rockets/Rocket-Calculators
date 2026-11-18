@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/png"
+	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
+<head>
+<title>Ejection charge Calculator V2.6</title>
+<meta name="viewport" content="width=1000, initial-scale=1.3">
+<style type="text/css">
+form {
+display:block;
+border:1px solid #000000;
+border-radius:5px;
+min-width:2.25in;
+margin:5px; padding:10px;
+text-align:justify;
+background:#e5e5e5;
+color:#000000;
+float:left; }
+
+input[type="number"] {
+border:1px solid #000000;
+border-radius:3px;
+width:1.6in; height:.15in;
+margin:2px; padding:2px;
+text-align:justify;}
+select{
+width:.7in; height:.2in;
+margin:3px; }
+.toggle{
+cursor:pointer; }
+output.val{
+display:inline-block;
+border:1px solid #000000;
+border-radius:3px;
+width:1.6in; height:.15in;
+margin:2px; padding:2px;
+background:#ffffff;
+font-size:13px; line-height:.15in;
+vertical-align:middle;
+overflow:hidden; white-space:nowrap;}
+</style>
+<script type="text/javascript">
+	// Shear strength ranges in Pa: [min, max]
+	const PinMaterials = {
+		nylon: [65000000, 80000000],	// Nylon 6 / 6-6
+		peek:  [53000000, 65000000],	// PEEK (unfilled)
+		pc:    [60000000, 70000000],	// Polycarbonate
+		pp:    [25000000, 40000000]	    // Polypropylene
+	};
+	function PfromAlt(alt){return (101325+alt*13.06+alt*alt*0.0007354+alt*alt*alt*alt*0.000000000000602)*Math.exp(-0.0002465*alt);}
+	function toggleSec(bodyId, arrowId){
+		var body = document.getElementById(bodyId);
+		var arrow = document.getElementById(arrowId);
+		if (body.style.display == "none"){body.style.display = "block"; arrow.innerHTML = "&#9660;";}
+		else {body.style.display = "none"; arrow.innerHTML = "&#9654;";}
+	}
+	function fmt(x){
+		if (!isFinite(x)){return "";}
+		return Number(x.toPrecision(4)).toString();
+	}
+	function updateOut(){
+		const pi = 3.141592653589;
+		const G = 9.807;
+		var form = document.getElementById("EjectCalc");
+		var inter = document.getElementById("Intermediate");
+		var Charge = form.elements["ChargeSize"];
+		var PinGood = form.elements["pinGood"];
+		var Mat = PinMaterials[form.elements["PinMat"].value];
+		const SSmin = Mat[0];
+		const SSmax = Mat[1];
+		var plength=parseFloat(form.elements["len"].value) * parseFloat(form.elements["lnun"].value);
+		var pradius=parseFloat(form.elements["diam"].value) * parseFloat(form.elements["diun"].value)*0.5;
+		var LSElev=parseFloat(form.elements["elev"].value) * parseFloat(form.elements["elevun"].value);
+		var Alt=parseFloat(form.elements["alt"].value) * parseFloat(form.elements["alun"].value);
+		var Frun = parseFloat(form.elements["Frun"].value);
+		var Fric=parseFloat(form.elements["Fric"].value) * Frun;
+		var PinNum=parseInt(form.elements["Pin"].value)
+		var PinRad=parseFloat(form.elements["Pintype"].value);
+		var MEject=parseFloat(form.elements["MEject"].value) * parseFloat(form.elements["MUnit"].value);
+		if (isNaN(MEject)){MEject=0;}
+		var CoupLen=parseFloat(form.elements["CoupLen"].value) * parseFloat(form.elements["CLun"].value);
+		if (isNaN(CoupLen)) {CoupLen = 2*pradius;}
+		var VEject=parseFloat(form.elements["VEject"].value) * parseFloat(form.elements["VEun"].value);
+		var SF = parseFloat(form.elements["SF"].value);
+		var Area = pradius*pradius*pi;
+		var PaGL = PfromAlt(LSElev);
+		var PaAp = PfromAlt(Alt+LSElev);
+		var DP = PaGL-PaAp;
+		var Pforce = DP*Area;
+		var Efinal=0.5*MEject*VEject*VEject;
+		if (isNaN(PinNum) && isNaN(Fric) || PinNum == 0 && isNaN(Fric) || isNaN(PinNum) && Fric == 0 || PinNum == 0 && Fric == 0)
+		{
+			var check = false;
+			var Fric = 1.2*Pforce;
+		}
+		else {var check = true;}
+		var PinArea = PinNum*pi*PinRad*PinRad;
+		var PinForcemax = PinArea*SSmax;
+		var PinForcemin = PinArea*SSmin;
+		var EFric=CoupLen*Fric;
+		var EPin= PinNum*pi*PinRad*PinRad*PinRad*SSmax;
+		var Etotal=Efinal+EFric+EPin;
+		var StaticSepForce = Fric+PinForcemax;
+		var StaticSepForceMin = Fric+PinForcemin;
+		var DynamicSepForce = Etotal/CoupLen;
+		if (check)
+		{
+			if (PinNum==1){PinGood.value = "You need at least 2 shear pins.";}
+			else if (Pforce < 0.85*StaticSepForceMin){PinGood.value = "Good shear pin choice.";}
+			else if (Pforce < StaticSepForce){PinGood.value = "Marginal shear pin choice.";}
+			else if (Pforce >= StaticSepForce){PinGood.value = "Bad shear pin choice.";}
+		}
+		else
+		{
+			var output = Pforce/Frun;
+			if (isNaN(output)){PinGood.value = "";}
+			else if(Frun == 1){PinGood.value = Pforce.toFixed(0) + " N at apogee";}
+			else if(Frun == 4.4482){PinGood.value = output.toFixed(1) + " Lb at apogee";}
+			else if(Frun == .00980665){PinGood.value = output.toFixed(0) + " gf at apogee";}
+			else if(Frun == 9.80665){PinGood.value = output.toFixed(1)+ " Kgf at apogee";}
+		}
+		var SepForce = Math.pow((StaticSepForce*StaticSepForce+DynamicSepForce*DynamicSepForce), 0.5);
+		var Vol = Area*plength;
+		var Pjection = SepForce/Area;
+		Chg = (SF*Pjection*Vol*.00457).toFixed(3);
+
+		if(Chg < 1000){
+			Charge.value = " Use " + Chg + " grams of black powder.";
+		} else if (isNaN(Chg)){
+			Charge.value = "";
+		} else {
+			Charge.value = " Unrealistic Input: " + Chg + " grams";
+		}
+
+		// Intermediate values (peak charge force/pressure include the safety factor)
+		var PeakForce = SF*SepForce;
+		var PeakPress = SF*Pjection;
+		var PAun = parseFloat(inter.elements["PAun"].value);
+		if (PAun == 1){inter.elements["PinAreaOut"].value = isFinite(PinArea) ? PinArea.toExponential(3) : "";}
+		else {inter.elements["PinAreaOut"].value = fmt(PinArea / PAun);}
+		inter.elements["PinMaxOut"].value = fmt(PinForcemax / parseFloat(inter.elements["PMaxun"].value));
+		inter.elements["PinMinOut"].value = fmt(PinForcemin / parseFloat(inter.elements["PMinun"].value));
+		inter.elements["PeakForceOut"].value = fmt(PeakForce / parseFloat(inter.elements["PFun"].value));
+		inter.elements["PeakPressOut"].value = fmt(PeakPress / parseFloat(inter.elements["PPun"].value));
+	}
+
+</script>
+<body>
+<span style="font-family: Helvetica;">
+<form id="EjectCalc" oninput="updateOut()">
+<b>Ejection Charge Calculator V2.6</b>
+<br>Pressurized length:<br>
+<input name="len" type="number" value="0" min="0"/>
+<select name="lnun" onchange="updateOut()">
+	<option value="0.001">mm</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
+</select>
+
+<br>Pressurized diameter:<br>
+<input name="diam" type="number" value="0" min="0"/>
+<select name="diun" onchange="updateOut()">
+	<option value="0.001">mm</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
+</select>
+
+<br>Launch site altitude (ASL):<br>
+<input name="elev" type="number" value="0"/>
+<select name="elevun" onchange="updateOut()">
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="0.3048">ft</option>
+	<option value="304.8">kft</option>
+	<option value="1609.34">mi</option>
+</select>
+
+<br>Apogee (AGL):<br>
+<input name="alt" type="number" value="0" min="0"/>
+<select name="alun" onchange="updateOut()">
+	<option selected="selected" value="1">m</option>
+	<option value="1000">km</option>
+	<option value="0.3048">ft</option>
+	<option value="304.8">kft</option>
+	<option value="1609.34">mi</option>
+</select>
+
+<br>Friction force:<br>
+<input name="Fric" type="number" value="0" min="0"/>
+<select name="Frun" onchange="updateOut()">
+	<option value="4.4482">lb</option>
+	<option selected="selected" value="1">N</option>
+	<option value=".00980665">g f</option>
+	<option value="9.80665">kg f</option>
+</select>
+
+<br>Shear pin specifications:<br>
+<input name="Pin" type="number" value="0" min="0" style="width:.4in;"/>
+<select name="Pintype" onchange="updateOut()" style="width:.7in;">
+	<option selected="selected" value=".0005677">0-80</option>
+	<option value=".00075">M2</option>
+	<option value=".0008141">2-56</option>
+	<option value=".000974">M2.5</option>
+	<option value=".0010316">4-40</option>
+	<option value=".0011935">M3</option>
+	<option value=".0012662">6-32</option>
+</select>
+<select name="PinMat" onchange="updateOut()" style="width:1.15in;">
+	<option selected="selected" value="nylon">Nylon 6/66</option>
+	<option value="peek">PEEK</option>
+	<option value="pc">Polycarbonate</option>
+	<option value="pp">Polypropylene</option>
+</select>
+
+<br><strong><output name="pinGood"></output></strong>
+
+<br><br>
+<div><b class="toggle" onclick="toggleSec('VelBody','VelArrow')"><span id="VelArrow">&#9654;</span> Ejection velocity (optional)</b></div>
+<div id="VelBody" style="display:none;">
+Ejection Component mass:<br>
+<input name="MEject" type="number" value="0" min="0"/>
+<select name="MUnit" onchange="updateOut()">
+	<option selected="selected" value="1">kg</option>
+	<option value=".001">g</option>
+	<option value=".4536">lb</option>
+	<option value=".0283">oz</option>
+	<option value="14.5939">slug</option>
+</select>
+
+<br>Coupler Shoulder Length:<br>
+<input name="CoupLen" type="number" value="" placeholder="assumes 1 cal if blank" min="0"/>
+<select name="CLun" onchange="updateOut()">
+	<option value="0.001">mm</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
+</select>
+
+<br>Desired Ejection Velocity:<br>
+<input name="VEject" type="number" value="4" min="0"/>
+<select name="VEun" onchange="updateOut()">
+	<option selected="selected" value="1">m/s</option>
+	<option value="0.277777777778">km/hr</option>
+	<option value="0.44704">mi/hr</option>
+	<option value="0.3048">ft/s</option>
+</select>
+</div>
+
+<br>Safety Factor:<br>
+<input name="SF" type="number" step="0.001" min="1" value="1.5"/>
+
+<br><br><strong><output name="ChargeSize"></output></strong>
+
+</form>
+
+<form id="Intermediate" onsubmit="return false">
+<b class="toggle" onclick="toggleSec('InterBody','InterArrow')"><span id="InterArrow">&#9654;</span> Intermediate Values</b>
+<div id="InterBody" style="display:none;">
+Total shear pin area:<br>
+<output class="val" name="PinAreaOut"></output>
+<select name="PAun" onchange="updateOut()">
+	<option selected="selected" value="0.000001">mm&sup2;</option>
+	<option value="0.0001">cm&sup2;</option>
+	<option value="0.00064516">in&sup2;</option>
+	<option value="1">m&sup2;</option>
+</select>
+
+<br>Max total pin shear strength:<br>
+<output class="val" name="PinMaxOut"></output>
+<select name="PMaxun" onchange="updateOut()">
+	<option value="4.4482">lb</option>
+	<option selected="selected" value="1">N</option>
+	<option value=".00980665">g f</option>
+	<option value="9.80665">kg f</option>
+</select>
+
+<br>Min total pin shear strength:<br>
+<output class="val" name="PinMinOut"></output>
+<select name="PMinun" onchange="updateOut()">
+	<option value="4.4482">lb</option>
+	<option selected="selected" value="1">N</option>
+	<option value=".00980665">g f</option>
+	<option value="9.80665">kg f</option>
+</select>
+
+<br>Peak ejection charge force:<br>
+<output class="val" name="PeakForceOut"></output>
+<select name="PFun" onchange="updateOut()">
+	<option value="4.4482">lb</option>
+	<option selected="selected" value="1">N</option>
+	<option value=".00980665">g f</option>
+	<option value="9.80665">kg f</option>
+</select>
+
+<br>Peak charge pressure:<br>
+<output class="val" name="PeakPressOut"></output>
+<select name="PPun" onchange="updateOut()">
+	<option value="1">Pa</option>
+	<option selected="selected" value="1000">kPa</option>
+	<option value="6894.757">psi</option>
+	<option value="100000">bar</option>
+	<option value="101325">atm</option>
+</select>
+</div>
+
+</form>
+</span>
+</body>
+</html>
