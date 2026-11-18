@@ -122,7 +122,7 @@ overflow:hidden; white-space:nowrap;}
 		var SepForce = Math.pow((StaticSepForce*StaticSepForce+DynamicSepForce*DynamicSepForce), 0.5);
 		var Vol = Area*plength;
 		var Pjection = SepForce/Area;
-		Chg = (SF*Pjection*Vol*.00457).toFixed(3);
+		var Chg = (SF*Pjection*Vol*.00457).toPrecision(2);
 
 		if(Chg < 1000){
 			Charge.value = " Use " + Chg + " grams of black powder.";
