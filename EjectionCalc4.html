@@ -4,7 +4,7 @@
 	href="https://openclipart.org/image/2400px/svg_to_png/27128/ElectronicRU-Rocket-Picture.png" />
 <head>
 <title>Ejection Charge Calculator v4</title>
-<meta name="viewport" content="width=1000, initial-scale=1.3">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style type="text/css">
 form {
 display:block;
@@ -38,6 +38,28 @@ background:#ffffff;
 font-size:13px; line-height:.15in;
 vertical-align:middle;
 overflow:hidden; white-space:nowrap;}
+button.units{
+margin:4px 0 2px 0; padding:2px 8px;
+border:1px solid #000000; border-radius:3px;
+background:#ffffff; cursor:pointer; }
+/* Phones: stack the panels and use finger-sized controls. Desktop layout is unchanged. */
+@media (max-width: 700px){
+span{font-size:16px;}
+form{float:none; min-width:0; margin:6px 4px; padding:12px; text-align:left;}
+input[type="number"], select, output.val{
+	height:36px !important; font-size:16px; box-sizing:border-box; vertical-align:middle; }
+input[type="number"]{width:55% !important;}
+select{width:37% !important;}
+output.val{width:55% !important; line-height:30px; }
+select[name="PackPos"], select[name="AltMode"]{width:94% !important;}
+input[name="Pin"]{width:16% !important;}
+select[name="Pintype"]{width:28% !important;}
+select[name="PinMat"]{width:44% !important;}
+output[name="GovOut"]{width:94% !important; white-space:normal; height:auto !important; min-height:36px;}
+output[name="warn"], output[name="pinSuggest"]{max-width:none !important; font-size:13px !important;}
+.toggle{display:inline-block; padding:8px 0;}
+button.units{font-size:16px; padding:8px 12px;}
+}
 </style>
 <script type="text/javascript">
 	// Shear strength ranges in Pa: [min, max]
@@ -69,46 +91,58 @@ overflow:hidden; white-space:nowrap;}
 	// Textile solid volume: sizing ignores it (full bay volume, as in the fits), so more textile can only
 	// raise the charge; the structural check subtracts it at nylon density (1.14 g/cm^3), which raises pressure.
 	const RHO_TEXT_STRUCT = 1.14;
+	const C_BP = 0.9;	// J/(g K), solid black powder heat capacity
 	// Heat-loss fraction A depends on textile mass per bay volume (mass loading). Fitted to threshold
 	// charges from Fetter's fixtures, whose packing density is unknown: f = loading / RHO_FETTER.
 	// Sizing assumes his packs were 0.20 g/cm^3 (more heat loss for a given loading); the structural check
 	// assumes 0.32 g/cm^3 (a dense storage pack, less heat loss). "hi" = sizing, "lo" = structural check.
 	const RHO_FETTER_SIZE = 0.20, RHO_FETTER_STRUCT = 0.32;	// g/cm^3
 	// Fetter's data can't tell whether heat loss follows textile mass per bay VOLUME or per tube
-	// CROSS-SECTION (fabric the gas passes through). Both agree for his 3 x 15 in VTS-1 bay (L_REF);
-	// sizing uses whichever gives more heat loss, the structural check whichever gives less.
-	const L_REF = 38.1;	// cm
+	// CROSS-SECTION (fabric the gas passes through). Both agree for his 3 x 15 in VTS-1 bay, whose length is
+	// 5 diameters; the cross-section form is referenced to 5 x D so it scales with rocket size.
+	// Sizing uses whichever gives more heat loss, the structural check whichever gives less.
+	const L_REF_D = 5;	// reference length in bay diameters (VTS-1 L/D)
 	const A_PTS = {
-		hiAgainst: [[0,0],[0.25,0.690],[0.5,0.880],[1,0.944]],
+		hiAgainst: [[0,0],[0.25,0.690],[0.5,0.880],[1,0.951]],	// full-pack top from VTS-1 1.0/1.3 g (Test #8 = 1.30 cc)
 		loAgainst: [[0,0],[0.25,0.365],[0.5,0.822],[1,0.933]],
-		hiOpen:    [[0,0],[0.5,0.822],[1,0.944]],
+		hiOpen:    [[0,0],[0.5,0.822],[1,0.951]],
 		loOpen:    [[0,0],[0.5,0.690],[1,0.933]]
 	};
-	const A_EXP = {hiAgainst:[0.9498,5.193], hiOpen:[0.9653,3.815]};	// concave fits; sizing uses the larger
+	const A_EXP = {hiAgainst:[0.9559,5.106], hiOpen:[0.9750,3.704]};	// concave fits; sizing uses the larger
 	function pwl(pts, x){
 		for (var i = 1; i < pts.length; i++){
 			if (x <= pts[i][0]){return pts[i-1][1] + (pts[i][1]-pts[i-1][1])*(x-pts[i-1][0])/(pts[i][0]-pts[i-1][0]);}
 		}
 		return pts[pts.length-1][1];
 	}
+	// f is clamped to [0, 1]: a pack denser than Fetter's full pack is treated as full, not extrapolated.
+	// Open space at the charge never absorbs more than the same pack against the charge.
 	function lossA(curve, f){
-		f = Math.max(f, 0);
-		var a = pwl(A_PTS[curve], Math.min(f, 1));
+		f = Math.min(Math.max(f, 0), 1);
+		var a = pwl(A_PTS[curve], f);
 		if (A_EXP[curve]){var e = A_EXP[curve]; a = Math.max(a, e[0]*(1-Math.exp(-e[1]*f)));}
+		if (curve.slice(-4) == "Open"){a = Math.min(a, lossA(curve.slice(0, -4) + "Against", f));}
 		return a;
 	}
 	function tab(arr, T){
 		var x = (T-TB.T0)/TB.dT, n = arr.length-1;
-		if (x <= 0){return arr[0];}
+		if (x <= 0){x = Math.max(x, -5); return arr[0] + (arr[1]-arr[0])*x;}	// extrapolate to 150 K
 		if (x >= n){return arr[n];}
 		var i = Math.floor(x);
 		return arr[i] + (arr[i+1]-arr[i])*(x-i);
+	}
+	// Gas moles in the bay: product gas (frozen) plus air, with product water above its saturation pressure condensed.
+	// Latent heat is ignored (conservative). Matters only near bay temperature (cold-gas floor, very high A).
+	const NW = 0.001858;	// mol H2O per g BP in the frozen products
+	function gasMol(m, na, T, V){
+		var nwv = Math.min(m*NW, Psat(T)*V/(Rg*T));
+		return m*tab(TB.ng, T) - (m*NW - nwv) + na;
 	}
 	// Peak gauge pressure (Pa) for m grams of BP in free gas volume Vf (m^3), ambient P0 (Pa), bay temperature T0 (K)
 	function bayDP(m, Vf, P0, T0, A, Qx){
 		var na = P0*Vf/(Rg*T0);
 		var uaT0 = tab(TB.ua, T0);
-		var U0 = m*TB.H + na*uaT0;
+		var U0 = m*(TB.H + C_BP*(T0 - 298.15)) + na*uaT0;	// reactants carry sensible heat away from 298 K
 		var Qtot = U0 - (m*tab(TB.up, T0) + na*uaT0) + Qx*m;
 		var Ut = U0 + Qx*m - A*Qtot;
 		var lo = TB.T0, hi = TB.T0 + TB.dT*(TB.up.length-1);
@@ -117,7 +151,7 @@ overflow:hidden; white-space:nowrap;}
 			if (m*tab(TB.up, mid) + na*tab(TB.ua, mid) < Ut){lo = mid;} else {hi = mid;}
 		}
 		var T = 0.5*(lo+hi);
-		return {dP:(m*tab(TB.ng, T) + na)*Rg*T/Vf - P0, T:T};
+		return {dP:gasMol(m, na, T, Vf)*Rg*T/Vf - P0, T:T};
 	}
 	// Smallest charge (g) whose peak pressure reaches target (Pa). Qx may be a number or a function of charge mass.
 	function solveCharge(target, Vf, P0, T0, A, Qx){
@@ -132,10 +166,108 @@ overflow:hidden; white-space:nowrap;}
 		}
 		return hi;
 	}
+	// Temperature at which the bay contents (m g of products, na mol of air) hold internal energy U. Exact inverse
+	// of the linearly interpolated tables, so latent-heat steps are handled without spikes.
+	function invT(m, na, U){
+		var n = TB.up.length - 1;
+		function Ui(i){return m*TB.up[i] + na*TB.ua[i];}
+		if (U <= Ui(0)){return Math.max(TB.T0 + TB.dT*(U - Ui(0))/(Ui(1) - Ui(0)), TB.T0 - 5*TB.dT);}
+		if (U >= Ui(n)){return TB.T0 + TB.dT*n;}
+		var lo = 0, hi = n;
+		while (hi - lo > 1){var mid = (lo + hi) >> 1; if (Ui(mid) < U){lo = mid;} else {hi = mid;}}
+		return TB.T0 + TB.dT*(lo + (U - Ui(lo))/(Ui(hi) - Ui(lo)));
+	}
+	// Net gas work (J) on the ejected section while it slides dV (m^3) off the shoulder: adiabatic expansion from the
+	// sealed peak, integrated as dU = -P dV in 20 midpoint steps against the product and air tables, minus the
+	// ambient back-pressure work.
+	function strokeWork(m, Vf, P0, T0, A, Qx, dV){
+		var b = bayDP(m, Vf, P0, T0, A, Qx);
+		var na = P0*Vf/(Rg*T0), T = b.T, V = Vf, W = 0, N = 20, h = dV/N;
+		var U = m*tab(TB.up, T) + na*tab(TB.ua, T);
+		function P(T, V){return gasMol(m, na, T, V)*Rg*T/V;}
+		for (var i = 0; i < N; i++){
+			var Tm = invT(m, na, U - 0.5*P(T, V)*h);
+			var pm = P(Tm, V + 0.5*h);
+			U -= pm*h; W += pm*h; V += h;
+			T = invT(m, na, U);
+		}
+		return W - P0*dV;
+	}
+	// Smallest charge (g) whose stroke work reaches E (J). Qx may be a number or a function of charge mass.
+	// E = 0 still needs a charge: the gas must push the section all the way off the shoulder (net work >= 0).
+	function solveWork(E, Vf, P0, T0, A, Qx, dV){
+		if (!(dV > 0)){return 0;}
+		E = Math.max(E, 0);
+		var q = (typeof Qx == "function") ? Qx : function(){return Qx;};
+		var hi = 0.5;
+		while (strokeWork(hi, Vf, P0, T0, A, q(hi), dV) < E){hi *= 2; if (hi > 5000){return Infinity;}}
+		var lo = 0;
+		for (var i = 0; i < 50; i++){
+			var mid = 0.5*(lo+hi);
+			if (strokeWork(mid, Vf, P0, T0, A, q(mid), dV) < E){lo = mid;} else {hi = mid;}
+		}
+		return hi;
+	}
 	function num(x){var v = parseFloat(x); return isNaN(v) ? 0 : v;}
+	// Round up to 2 significant figures, so the shown charge is never below SF x threshold.
+	function roundUp2(x){
+		if (!(x > 0) || !isFinite(x)){return x;}
+		var p = Math.pow(10, Math.floor(Math.log10(x)) - 1);
+		return Number((Math.ceil(x/p - 1e-9)*p).toPrecision(2));
+	}
 	// -----------------------------------------------------------------------------------
 
-	function PfromAlt(alt){return (101325+alt*13.06+alt*alt*0.0007354+alt*alt*alt*alt*0.000000000000602)*Math.exp(-0.0002465*alt);}
+	// International Standard Atmosphere pressure (Pa) at geometric altitude alt (m ASL), valid to ~80 km.
+	function PfromAlt(alt){
+		var H = 6356766*alt/(6356766 + alt);	// geopotential altitude
+		if (H < 11000){return 101325*Math.pow(1 - 2.25577e-5*H, 5.25588);}
+		if (H < 20000){return 22632.06*Math.exp(-(H - 11000)/6341.62);}
+		if (H < 32000){return 5474.889*Math.pow(216.65/(216.65 + 0.001*(H - 20000)), 34.1632);}
+		if (H < 47000){return 868.0187*Math.pow(228.65/(228.65 + 0.0028*(H - 32000)), 12.2011);}
+		return 110.9063*Math.exp(-(H - 47000)/7922.26);
+	}
+	// Saturation vapor pressure of water (Pa) over liquid above 0 C and over ice below (Buck).
+	function Psat(T){
+		var t = T - 273.15;
+		return (t >= 0) ? 611.21*Math.exp((18.678 - t/234.5)*(t/(257.14 + t))) : 611.15*Math.exp((23.036 - t/333.7)*(t/(279.82 + t)));
+	}
+	// Metric / imperial switch: converts every entered value so the rocket stays the same, then switches all units.
+	var unitSys = "metric";
+	const UNIT_PAIRS = [["len","lnun"],["diam","diun"],["CoupLen","CLun"],["elev","elevun"],["alt","alun"],["dalt","dalun"],
+		["Fric","Frun"],["mtext","mtun"],["MEject","MUnit"],["VEject","VEun"],["vhw","vhun"]];
+	const UNIT_SETS = {
+		imperial: {lnun:".0254", diun:".0254", CLun:".0254", elevun:"0.3048", alun:"0.3048", dalun:"0.3048", Frun:"4.4482",
+			mtun:"28.3495", MUnit:".4536", VEun:"0.3048", vhun:"0.000016387064", tbun:"F",
+			PAun:"0.00064516", PMaxun:"4.4482", PMinun:"4.4482", RPun:"6894.757", VFun:"0.000016387064", PFun:"4.4482",
+			PPun:"6894.757", PSun:"6894.757", PHun:"6894.757", PEun:"6894.757", EVun:"0.3048"},
+		metric: {lnun:".01", diun:".01", CLun:".01", elevun:"1", alun:"1", dalun:"1", Frun:"1",
+			mtun:"1", MUnit:"1", VEun:"1", vhun:"0.000001", tbun:"C",
+			PAun:"0.000001", PMaxun:"1", PMinun:"1", RPun:"1000", VFun:"0.000001", PFun:"1",
+			PPun:"1000", PSun:"1000", PHun:"1000", PEun:"1000", EVun:"1"}
+	};
+	function toggleUnits(){
+		var to = (unitSys == "metric") ? "imperial" : "metric", set = UNIT_SETS[to];
+		var f = document.getElementById("EjectCalc"), g = document.getElementById("Intermediate");
+		UNIT_PAIRS.forEach(function(p){
+			var inp = f.elements[p[0]], sel = f.elements[p[1]], v = parseFloat(inp.value);
+			if (inp.value !== "" && !isNaN(v)){
+				var out = v*parseFloat(sel.value)/parseFloat(set[p[1]]);
+				inp.value = (out == 0) ? 0 : Number(out.toPrecision(4));
+			}
+			sel.value = set[p[1]];
+		});
+		var t = f.elements["tbay"], tu = f.elements["tbun"], tv = parseFloat(t.value);
+		if (t.value !== "" && !isNaN(tv)){
+			var K = (tu.value == "C") ? tv + 273.15 : (tu.value == "F") ? (tv - 32)/1.8 + 273.15 : tv;
+			var nv = (set.tbun == "F") ? (K - 273.15)*1.8 + 32 : K - 273.15;
+			t.value = Number(nv.toFixed(1));
+		}
+		tu.value = set.tbun;
+		for (var k in set){if (g.elements[k]){g.elements[k].value = set[k];}}
+		unitSys = to;
+		document.getElementById("UnitBtn").innerHTML = (to == "metric") ? "Switch to imperial units" : "Switch to metric units";
+		updateOut();
+	}
 	function toggleSec(bodyId, arrowId){
 		var body = document.getElementById(bodyId);
 		var arrow = document.getElementById(arrowId);
@@ -173,9 +305,11 @@ overflow:hidden; white-space:nowrap;}
 		var MEject=parseFloat(form.elements["MEject"].value) * parseFloat(form.elements["MUnit"].value);
 		if (isNaN(MEject)){MEject=0;}
 		var CoupLen=parseFloat(form.elements["CoupLen"].value) * parseFloat(form.elements["CLun"].value);
-		if (isNaN(CoupLen)) {CoupLen = 2*pradius;}
+		if (isNaN(CoupLen) || CoupLen <= 0) {CoupLen = 2*pradius;}
 		var VEject=parseFloat(form.elements["VEject"].value) * parseFloat(form.elements["VEun"].value);
+		if (isNaN(VEject)){VEject = 0;}	// blank = no speed requested; the section must still clear the shoulder
 		var SF = parseFloat(form.elements["SF"].value);
+		if (isNaN(SF)){SF = 1.2;}	// blank = default; the field itself refills on change
 		if (SF < 1){SF = 1;}
 		var Area = pradius*pradius*pi;
 		var PaGL = PfromAlt(LSElev);
@@ -224,9 +358,11 @@ overflow:hidden; white-space:nowrap;}
 			else if(Frun == .00980665){PinGood.value = output.toFixed(0) + " gf at apogee";}
 			else if(Frun == 9.80665){PinGood.value = output.toFixed(1)+ " Kgf at apogee";}
 		}
-		var SepForce = Math.max(StaticSepForce, DynamicSepForce);	// the larger requirement sets the charge
+		var SepForce = Math.max(StaticSepForce, DynamicSepForce);	// 2.6 constant-pressure requirement (classic estimate only)
 		var Vol = Area*plength;
 		var Pjection = SepForce/Area;
+		var Pstatic = StaticSepForce/Area;	// v4: peak pressure must break the pins/friction...
+		var dVstroke = Area*CoupLen;		// ...and the expanding gas must then supply Etotal over the shoulder stroke
 
 		// ---- v4: deployment conditions -------------------------------------------------
 		var DepAlt = parseFloat(form.elements["dalt"].value) * parseFloat(form.elements["dalun"].value);
@@ -248,6 +384,7 @@ overflow:hidden; white-space:nowrap;}
 		var inputError = "";
 		var mRaw = form.elements["mtext"].value;
 		if (mRaw === "" || isNaN(parseFloat(mRaw))){inputError = "Enter the textile mass.";}
+		else if (!(Tbay >= 200 && Tbay <= 350)){inputError = "Bay temperature must be between \u221273 \u00b0C and 77 \u00b0C (\u2212100 \u00b0F to 170 \u00b0F). Check its units.";}
 		else if (Vol > 0 && !(VfreeS > 0)){inputError = "Textile and hardware volume exceed the bay volume.";}
 		if (loading > 0.4){warnings.push("Textile mass is more than fits in this bay even at storage-pack density (~0.32 g/cm\u00b3). Check mass and bay size.");}
 		if (plength > 0 && pradius > 0){
@@ -255,11 +392,15 @@ overflow:hidden; white-space:nowrap;}
 			if (mText > 0 && (LD < 2.95 || LD > 5.05)){warnings.push("Bay length is " + fmt(LD) + " diameters; heat-loss values were only tested at 3\u20135.");}
 			if (Din < 2 || Din > 4.1){warnings.push("Bay diameter is outside the tested 2\u20134 in range.");}
 		}
+		if (PinNum > 0 && form.elements["PinMat"].value == "nylon" && Tbay < 273.15 && Tbay >= 200){
+			warnings.push("Nylon shear pins are stronger below 0 \u00b0C than the room-temperature strength used here; add margin or ground-test cold.");
+		}
 
 		// ---- v4: heat-loss fractions ----------------------------------------------------
 		var areal = (Area > 0) ? mText/(Area*1e4) : NaN;	// g/cm^2 of tube cross-section
-		var fSize = Math.max(loading/RHO_FETTER_SIZE, areal/(RHO_FETTER_SIZE*L_REF));
-		var fStruct = Math.min(loading/RHO_FETTER_STRUCT, areal/(RHO_FETTER_STRUCT*L_REF));
+		var Lref = L_REF_D*2*pradius*100;	// cm
+		var fSize = Math.max(loading/RHO_FETTER_SIZE, areal/(RHO_FETTER_SIZE*Lref));
+		var fStruct = Math.min(loading/RHO_FETTER_STRUCT, areal/(RHO_FETTER_STRUCT*Lref));
 		var Asize = (pos == "open") ? lossA("hiOpen", fSize) : lossA("hiAgainst", fSize);
 		var Astruct = (pos == "open") ? lossA("loOpen", fStruct) : lossA("loAgainst", fStruct);
 		var Ashift = lossA("loOpen", fStruct);
@@ -274,10 +415,12 @@ overflow:hidden; white-space:nowrap;}
 		function qxSize(m){return (m > 0) ? Math.min(QX_SIZE, E_O2*nO2/m) : QX_SIZE;}
 
 		// ---- v4: charge ------------------------------------------------------------------
-		var mThresh = NaN, Chg = NaN;
+		var mThresh = NaN, Chg = NaN, mStatic = NaN, mDyn = NaN;
 		if (Vol > 0 && Area > 0 && inputError == ""){
-			mThresh = solveCharge(Pjection, Vfree, P0, Tbay, Aeff, qxSize);
-			Chg = Number((SF*mThresh).toPrecision(2));
+			mStatic = solveCharge(Pstatic, Vfree, P0, Tbay, Aeff, qxSize);
+			mDyn = solveWork(Etotal, Vfree, P0, Tbay, Aeff, qxSize, dVstroke);
+			mThresh = Math.max(mStatic, mDyn);
+			Chg = roundUp2(SF*mThresh);
 			if (isFinite(mThresh) && qxSize(mThresh) < QX_SIZE){warnings.push("Charge is large for the air in this bay; post-flame heat is limited by the oxygen available.");}
 			if (isFinite(mThresh) && mThresh > 0 && (mThresh < 0.15 || mThresh > 4)){warnings.push("Threshold charge is outside the tested 0.15\u20134 g range.");}
 		}
@@ -291,7 +434,7 @@ overflow:hidden; white-space:nowrap;}
 			Charge.value = " Unrealistic Input: " + (isFinite(Chg) ? Chg : "> 5000") + " grams";
 		}
 		if (DepASL > HighAltWarn){
-			warnings.unshift("Apogee is above 6 km (~20 kft) ASL. Use high-altitude compatible charge designs such as vinyl tube charges or charge cannons.");
+			warnings.unshift("Deployment is above 6 km (~20 kft) ASL. Use high-altitude compatible charge designs such as vinyl tube charges or charge cannons.");
 		}
 		Warn.value = warnings.join("\n");
 
@@ -299,17 +442,33 @@ overflow:hidden; white-space:nowrap;}
 		var ok = isFinite(Chg) && Chg > 0;
 		var PeakPress = ok ? bayDP(Chg, Vfree, P0, Tbay, Aeff, qxSize(Chg)).dP : NaN;
 		var PeakForce = PeakPress*Area;
-		var PStruct = ok ? bayDP(Chg, VfreeS, P0, Tbay, Astruct, QX_STRUCT).dP : NaN;
-		var PShift = ok ? bayDP(Chg, VfreeS, P0, Tbay, Ashift, QX_STRUCT).dP : NaN;
-		var PEmpty = ok ? bayDP(Chg, Vol - Vhw, P0, Tbay, 0, QX_STRUCT).dP : NaN;
+		var Pst = Math.max(P0, PaGL);	// structural checks at the higher of deployment and launch-site pressure (ground tests)
+		var Tst = (PaGL > P0) ? 293.15 : Tbay;	// a ground test runs at about 20 C, not the deployment temperature
+		var PStruct = ok ? bayDP(Chg, VfreeS, Pst, Tst, Astruct, QX_STRUCT).dP : NaN;
+		var PShift = ok ? bayDP(Chg, VfreeS, Pst, Tst, Ashift, QX_STRUCT).dP : NaN;
+		var PEmpty = ok ? bayDP(Chg, Vol - Vhw, Pst, Tst, 0, QX_STRUCT).dP : NaN;
 		var Classic = SF*Pjection*Vol*.00457;
+		var ReqPress = (isFinite(mThresh) && mThresh > 0) ? bayDP(mThresh, Vfree, P0, Tbay, Aeff, qxSize(mThresh)).dP : Pstatic;
+		var EjVel = NaN;
+		if (ok && MEject > 0){
+			var Wnet = strokeWork(Chg, Vfree, P0, Tbay, Aeff, qxSize(Chg), dVstroke) - EFric - EPin;
+			EjVel = Math.sqrt(2*Math.max(Wnet, 0)/MEject);
+		}
 		var PAun = parseFloat(inter.elements["PAun"].value);
 		if (PAun == 1){inter.elements["PinAreaOut"].value = isFinite(PinArea) ? PinArea.toExponential(3) : "";}
 		else {inter.elements["PinAreaOut"].value = fmt(PinArea / PAun);}
 		inter.elements["PinMaxOut"].value = fmt(PinForcemax / parseFloat(inter.elements["PMaxun"].value));
 		inter.elements["PinMinOut"].value = fmt(PinForcemin / parseFloat(inter.elements["PMinun"].value));
-		inter.elements["ReqPressOut"].value = fmt(Pjection / parseFloat(inter.elements["RPun"].value));
+		inter.elements["ReqPressOut"].value = fmt(ReqPress / parseFloat(inter.elements["RPun"].value));
 		inter.elements["ThreshOut"].value = fmt(mThresh);
+		var Gov = "";
+		if (isFinite(mThresh) && mThresh > 0){
+			if (mStatic >= mDyn){Gov = "Breaking the pins and friction";}
+			else if (Efinal > 0){Gov = "Ejection speed over the shoulder stroke";}
+			else if (EFric > 0){Gov = "Friction over the shoulder stroke";}
+			else {Gov = "Pushing the section off the shoulder";}
+		}
+		inter.elements["GovOut"].value = Gov;
 		inter.elements["ClassicOut"].value = fmt(Classic);
 		inter.elements["VfreeOut"].value = fmt(VfreeS / parseFloat(inter.elements["VFun"].value));
 		inter.elements["RhoOut"].value = (mText > 0) ? fmt(loading) : "";
@@ -319,6 +478,7 @@ overflow:hidden; white-space:nowrap;}
 		inter.elements["PStructOut"].value = fmt(PStruct / parseFloat(inter.elements["PSun"].value));
 		inter.elements["PShiftOut"].value = fmt(PShift / parseFloat(inter.elements["PHun"].value));
 		inter.elements["PEmptyOut"].value = fmt(PEmpty / parseFloat(inter.elements["PEun"].value));
+		inter.elements["EjVelOut"].value = fmt(EjVel / parseFloat(inter.elements["EVun"].value));
 	}
 
 </script>
@@ -326,6 +486,7 @@ overflow:hidden; white-space:nowrap;}
 <span style="font-family: Helvetica;">
 <form id="EjectCalc" oninput="updateOut()">
 <b>Ejection Charge Calculator v4</b>
+<br><button type="button" class="units" id="UnitBtn" onclick="toggleUnits()">Switch to imperial units</button>
 <br>Pressurized length:<br>
 <input name="len" type="number" value="0" min="0"/>
 <select name="lnun" onchange="updateOut()">
@@ -339,6 +500,16 @@ overflow:hidden; white-space:nowrap;}
 <br>Pressurized diameter:<br>
 <input name="diam" type="number" value="0" min="0"/>
 <select name="diun" onchange="updateOut()">
+	<option value="0.001">mm</option>
+	<option selected="selected" value=".01">cm</option>
+	<option value="1">m</option>
+	<option value=".0254">in</option>
+	<option value=".3048">ft</option>
+</select>
+
+<br>Coupler shoulder length:<br>
+<input name="CoupLen" type="number" value="" placeholder="assumes 1 cal if blank" min="0"/>
+<select name="CLun" onchange="updateOut()">
 	<option value="0.001">mm</option>
 	<option selected="selected" value=".01">cm</option>
 	<option value="1">m</option>
@@ -438,15 +609,6 @@ Ejection Component mass:<br>
 	<option value="14.5939">slug</option>
 </select>
 
-<br>Coupler Shoulder Length:<br>
-<input name="CoupLen" type="number" value="" placeholder="assumes 1 cal if blank" min="0"/>
-<select name="CLun" onchange="updateOut()">
-	<option value="0.001">mm</option>
-	<option selected="selected" value=".01">cm</option>
-	<option value="1">m</option>
-	<option value=".0254">in</option>
-	<option value=".3048">ft</option>
-</select>
 
 <br>Desired Ejection Velocity:<br>
 <input name="VEject" type="number" value="4" min="0"/>
@@ -485,7 +647,7 @@ Bay temperature at deployment:<br>
 </div>
 
 <br>Safety factor (&times; threshold charge):<br>
-<input name="SF" type="number" step="0.001" min="1" value="1.2" onchange="if (parseFloat(this.value) < 1){this.value = 1; updateOut();}"/>
+<input name="SF" type="number" step="0.001" min="1" value="1.2" onchange="if (this.value === '' || isNaN(parseFloat(this.value))){this.value = 1.2; updateOut();} else if (parseFloat(this.value) < 1){this.value = 1; updateOut();}"/>
 
 <br><br><strong><output name="ChargeSize"></output></strong>
 <output name="warn" style="display:block; max-width:2.3in; color:#a00000; font-size:10px; white-space:pre-line;"></output>
@@ -532,8 +694,11 @@ Total shear pin area:<br>
 	<option value="101325">atm</option>
 </select>
 
-<br>Threshold charge (g, before safety factor):<br>
+<br>Conservative threshold charge (g, before safety factor):<br>
 <output class="val" name="ThreshOut"></output>
+
+<br>Charge set by:<br>
+<output class="val" name="GovOut" style="width:2.3in;"></output>
 
 <br>Classic ideal-gas estimate (g, with safety factor):<br>
 <output class="val" name="ClassicOut"></output>
@@ -541,7 +706,7 @@ Total shear pin area:<br>
 <br><br>
 <div><b class="toggle" onclick="toggleSec('AdvInterBody','AdvInterArrow')"><span id="AdvInterArrow">&#9654;</span> Advanced values</b></div>
 <div id="AdvInterBody" style="display:none;">
-Free gas volume:<br>
+Free gas volume (structural check):<br>
 <output class="val" name="VfreeOut"></output>
 <select name="VFun" onchange="updateOut()">
 	<option selected="selected" value="0.000001">cm&sup3;</option>
@@ -601,6 +766,15 @@ Free gas volume:<br>
 	<option value="6894.757">psi</option>
 	<option value="100000">bar</option>
 	<option value="101325">atm</option>
+</select>
+
+<br>Ejection velocity at recommended charge:<br>
+<output class="val" name="EjVelOut"></output>
+<select name="EVun" onchange="updateOut()">
+	<option selected="selected" value="1">m/s</option>
+	<option value="0.277777777778">km/hr</option>
+	<option value="0.44704">mi/hr</option>
+	<option value="0.3048">ft/s</option>
 </select>
 </div>
 </div>
