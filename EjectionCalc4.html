@@ -55,28 +55,36 @@ overflow:hidden; white-space:nowrap;}
 	// mix with the bay air; a fraction A of the heat is lost to textiles.
 	// Tables are per gram of BP vs temperature (K): up = product internal energy (J/g),
 	// ng = product gas (mol/g), ua = air internal energy (J/mol), H = reactant enthalpy (J/g).
-	const TB = {T0:250,dT:10,H:-4028.75,
-		up:[-6032.8,-6025.4,-6017.9,-6010.4,-6002.9,-5995.3,-5987.7,-5980.0,-5972.3,-5963.1,-5955.3,-5947.4,-5939.4,-5931.4,-5923.4,-5915.2,-5907.0,-5898.8,-5890.5,-5882.1,-5873.7,-5865.2,-5856.7,-5848.1,-5839.5,-5830.8,-5822.0,-5803.8,-5794.9,-5786.1,-5777.2,-5768.2,-5759.2,-5750.2,-5741.1,-5732.0,-5722.9,-5713.8,-5704.6,-5695.3,-5686.1,-5676.8,-5667.4,-5658.1,-5636.0,-5626.6,-5617.0,-5607.5,-5597.9,-5588.3,-5578.7,-5569.0,-5559.3,-5549.5,-5539.7,-5529.9,-5520.0,-5510.1,-5500.1,-5490.1,-5480.0,-5464.1,-5454.1,-5443.9,-5433.7,-5423.5,-5413.1,-5402.7,-5392.1,-5381.5,-5370.7,-5359.8,-5348.8,-5337.7,-5326.4,-5314.9,-5303.3,-5291.5,-5279.5,-5224.5,-5212.3,-5200.1,-5188.1,-5176.3,-5164.7,-5153.2,-5141.9,-5130.5,-5119.1,-5107.7,-5096.3,-5084.9,-5073.4,-5061.9,-5050.4,-5038.9,-5027.4,-5015.8,-4973.4,-4962.7,-4951.9,-4941.1,-4930.3,-4919.5,-4908.6,-4897.8,-4886.9,-4876.0,-4865.1,-4854.2,-4819.8,-4809.1,-4798.2,-4787.4,-4776.6,-4765.8,-4754.9,-4744.1,-4733.2,-4722.4,-4711.5,-4700.6,-4689.7,-4678.8,-4667.9,-4657.0,-4646.0,-4635.1,-4624.2,-4613.2,-4602.2,-4591.3,-4580.3,-4569.3,-4558.3,-4358.1,-4347.5,-4337.0,-4326.5,-4315.9,-4305.4,-4294.9,-4284.3,-4273.7,-4263.2,-4252.6,-4242.0,-4231.4,-4220.8,-4210.2,-4199.6,-4188.9,-4178.3,-4167.7,-4157.0,-4146.4,-4135.7,-4125.0,-4114.4,-4103.7,-4093.0,-4082.3,-4071.6,-4060.9,-4050.2,-4039.5,-4028.8,-4018.0,-4007.3,-3996.6,-3985.8,-3975.1,-3964.3,-3953.6,-3942.8,-3932.0,-3921.2,-3910.5,-3899.7,-3888.9,-3878.1,-3867.3,-3856.5,-3845.7,-3834.8,-3824.0,-3813.2,-3802.3,-3791.5,-3780.7,-3769.8,-3758.9,-3748.1,-3737.2,-3726.4,-3715.5,-3704.6,-3693.7,-3682.9,-3672.0,-3661.1,-3650.2,-3639.3,-3628.4,-3617.5,-3606.6,-3595.6,-3584.7,-3573.8,-3562.9,-3551.9,-3541.0,-3530.1,-3519.1,-3508.2,-3497.2,-3486.3,-3475.3,-3464.3,-3453.4,-3442.4,-3431.4,-3420.5,-3409.5,-3398.5,-3387.5,-3376.5,-3365.5,-3354.6,-3343.6,-3332.6,-3321.6,-3310.5,-3299.5,-3288.5,-3277.5,-3266.5,-3255.5,-3244.4,-3233.4,-3222.4,-3211.3,-3200.3,-3189.3,-3178.2,-3167.2,-3156.2,-3145.1,-3134.1,-3123.0,-3111.9,-3100.9,-3089.8,-3078.8,-3067.7,-3056.6,-3045.6,-3034.5,-3023.4,-3012.3,-3001.2,-2990.2,-2979.1,-2968.0,-2956.9,-2945.8,-2934.7,-2923.6,-2912.5,-2901.4,-2890.3,-2879.2,-2868.1,-2857.0,-2845.9,-2834.8],
-		ng:[0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968],
-		ua:[-3635.84,-3428.45,-3220.98,-3013.41,-2805.73,-2597.89,-2389.89,-2181.70,-1973.31,-1764.68,-1555.80,-1346.64,-1137.19,-927.43,-717.34,-506.90,-296.08,-84.88,126.73,338.76,551.23,764.16,977.57,1191.46,1405.86,1620.77,1836.22,2052.22,2268.78,2485.92,2703.64,2921.95,3140.88,3360.43,3580.61,3801.42,4022.89,4245.02,4467.81,4691.27,4915.41,5140.24,5365.77,5591.99,5818.91,6046.53,6274.87,6503.91,6733.67,6964.14,7195.32,7427.22,7659.83,7893.15,8127.18,8361.92,8597.36,8833.50,9070.32,9307.84,9546.03,9784.90,10024.43,10264.61,10505.44,10746.91,10988.99,11231.69,11474.98,11718.86,11963.30,12208.30,12453.83,12699.88,12946.43,13193.47,13440.98,13688.96,13937.43,14186.36,14435.77,14685.63,14935.96,15186.75,15437.98,15689.67,15941.80,16194.37,16447.38,16700.82,16954.70,17209.00,17463.72,17718.86,17974.42,18230.39,18486.77,18743.55,19000.74,19258.32,19516.30,19774.67,20033.42,20292.57,20552.09,20811.99,21072.27,21332.91,21593.93,21855.31,22117.05,22379.15,22641.61,22904.42,23167.57,23431.08,23694.92,23959.11,24223.63,24488.49,24753.67,25019.19,25285.03,25551.19,25817.67,26084.47,26351.58,26619.01,26886.74,27154.77,27423.11,27691.74,27960.68,28229.90,28499.42,28769.23,29039.32,29309.70,29580.35,29851.29,30122.50,30393.98,30665.74,30937.76,31210.05,31482.60,31755.41,32028.48,32301.81,32575.39,32849.22,33123.30,33397.62,33672.19,33947.01,34222.06,34497.35,34772.87,35048.63,35324.61,35600.83,35877.27,36153.94,36430.82,36707.93,36985.26,37262.80,37540.55,37818.52,38096.70,38375.08,38653.67,38932.47,39211.46,39490.66,39770.05,40049.64,40329.42,40609.40,40889.57,41169.92,41450.46,41731.19,42012.10,42293.19,42574.47,42855.92,43137.54,43419.35,43701.32,43983.47,44265.78,44548.27,44830.92,45113.73,45396.71,45679.85,45963.15,46246.61,46530.23,46814.00,47097.93,47382.01,47666.24,47950.62,48235.15,48519.83,48804.65,49089.62,49374.73,49659.99,49945.38,50230.91,50516.58,50802.38,51088.32,51374.40,51660.61,51946.94,52233.41,52520.01,52806.74,53093.59,53380.57,53667.67,53954.90,54242.24,54529.71,54817.30,55105.01,55392.83,55680.78,55968.83,56257.01,56545.29,56833.69,57122.20,57410.82,57699.56,57988.39,58277.34,58566.40,58855.56,59144.82,59434.19,59723.67,60013.24,60302.92,60592.70,60882.58,61172.56,61462.63,61752.81,62043.08,62333.44,62623.90,62914.46,63205.11,63495.86,63786.69,64077.62,64368.64,64659.74,64950.94,65242.23,65533.61,65825.07,66116.62,66408.26,66699.98,66991.79,67283.68,67575.65,67867.71,68159.86,68452.08]};
+	const TB = {T0:200,dT:10,H:-4028.75,
+		up:[-6069.6,-6062.3,-6054.9,-6047.6,-6040.2,-6032.8,-6025.4,-6017.9,-6010.4,-6002.9,-5995.3,-5987.7,-5980.0,-5972.3,-5963.1,-5955.3,-5947.4,-5939.4,-5931.4,-5923.4,-5915.2,-5907.0,-5898.8,-5890.5,-5882.1,-5873.7,-5865.2,-5856.7,-5848.1,-5839.5,-5830.8,-5822.0,-5803.8,-5794.9,-5786.1,-5777.2,-5768.2,-5759.2,-5750.2,-5741.1,-5732.0,-5722.9,-5713.8,-5704.6,-5695.3,-5686.1,-5676.8,-5667.4,-5658.1,-5636.0,-5626.6,-5617.0,-5607.5,-5597.9,-5588.3,-5578.7,-5569.0,-5559.3,-5549.5,-5539.7,-5529.9,-5520.0,-5510.1,-5500.1,-5490.1,-5480.0,-5464.1,-5454.1,-5443.9,-5433.7,-5423.5,-5413.1,-5402.7,-5392.1,-5381.5,-5370.7,-5359.8,-5348.8,-5337.7,-5326.4,-5314.9,-5303.3,-5291.5,-5279.5,-5224.5,-5212.3,-5200.1,-5188.1,-5176.3,-5164.7,-5153.2,-5141.9,-5130.5,-5119.1,-5107.7,-5096.3,-5084.9,-5073.4,-5061.9,-5050.4,-5038.9,-5027.4,-5015.8,-4973.4,-4962.7,-4951.9,-4941.1,-4930.3,-4919.5,-4908.6,-4897.8,-4886.9,-4876.0,-4865.1,-4854.2,-4819.8,-4809.1,-4798.2,-4787.4,-4776.6,-4765.8,-4754.9,-4744.1,-4733.2,-4722.4,-4711.5,-4700.6,-4689.7,-4678.8,-4667.9,-4657.0,-4646.0,-4635.1,-4624.2,-4613.2,-4602.2,-4591.3,-4580.3,-4569.3,-4558.3,-4358.1,-4347.5,-4337.0,-4326.5,-4315.9,-4305.4,-4294.9,-4284.3,-4273.7,-4263.2,-4252.6,-4242.0,-4231.4,-4220.8,-4210.2,-4199.6,-4188.9,-4178.3,-4167.7,-4157.0,-4146.4,-4135.7,-4125.0,-4114.4,-4103.7,-4093.0,-4082.3,-4071.6,-4060.9,-4050.2,-4039.5,-4028.8,-4018.0,-4007.3,-3996.6,-3985.8,-3975.1,-3964.3,-3953.6,-3942.8,-3932.0,-3921.2,-3910.5,-3899.7,-3888.9,-3878.1,-3867.3,-3856.5,-3845.7,-3834.8,-3824.0,-3813.2,-3802.3,-3791.5,-3780.7,-3769.8,-3758.9,-3748.1,-3737.2,-3726.4,-3715.5,-3704.6,-3693.7,-3682.9,-3672.0,-3661.1,-3650.2,-3639.3,-3628.4,-3617.5,-3606.6,-3595.6,-3584.7,-3573.8,-3562.9,-3551.9,-3541.0,-3530.1,-3519.1,-3508.2,-3497.2,-3486.3,-3475.3,-3464.3,-3453.4,-3442.4,-3431.4,-3420.5,-3409.5,-3398.5,-3387.5,-3376.5,-3365.5,-3354.6,-3343.6,-3332.6,-3321.6,-3310.5,-3299.5,-3288.5,-3277.5,-3266.5,-3255.5,-3244.4,-3233.4,-3222.4,-3211.3,-3200.3,-3189.3,-3178.2,-3167.2,-3156.2,-3145.1,-3134.1,-3123.0,-3111.9,-3100.9,-3089.8,-3078.8,-3067.7,-3056.6,-3045.6,-3034.5,-3023.4,-3012.3,-3001.2,-2990.2,-2979.1,-2968.0,-2956.9,-2945.8,-2934.7,-2923.6,-2912.5,-2901.4,-2890.3,-2879.2,-2868.1,-2857.0,-2845.9,-2834.8],
+		ng:[0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0163281,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0169325,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968,0.0183968],
+		ua:[-4672.50,-4465.13,-4257.80,-4050.50,-3843.18,-3635.84,-3428.45,-3220.98,-3013.41,-2805.73,-2597.89,-2389.89,-2181.70,-1973.31,-1764.68,-1555.80,-1346.64,-1137.19,-927.43,-717.34,-506.90,-296.08,-84.88,126.73,338.76,551.23,764.16,977.57,1191.46,1405.86,1620.77,1836.22,2052.22,2268.78,2485.92,2703.64,2921.95,3140.88,3360.43,3580.61,3801.42,4022.89,4245.02,4467.81,4691.27,4915.41,5140.24,5365.77,5591.99,5818.91,6046.53,6274.87,6503.91,6733.67,6964.14,7195.32,7427.22,7659.83,7893.15,8127.18,8361.92,8597.36,8833.50,9070.32,9307.84,9546.03,9784.90,10024.43,10264.61,10505.44,10746.91,10988.99,11231.69,11474.98,11718.86,11963.30,12208.30,12453.83,12699.88,12946.43,13193.47,13440.98,13688.96,13937.43,14186.36,14435.77,14685.63,14935.96,15186.75,15437.98,15689.67,15941.80,16194.37,16447.38,16700.82,16954.70,17209.00,17463.72,17718.86,17974.42,18230.39,18486.77,18743.55,19000.74,19258.32,19516.30,19774.67,20033.42,20292.57,20552.09,20811.99,21072.27,21332.91,21593.93,21855.31,22117.05,22379.15,22641.61,22904.42,23167.57,23431.08,23694.92,23959.11,24223.63,24488.49,24753.67,25019.19,25285.03,25551.19,25817.67,26084.47,26351.58,26619.01,26886.74,27154.77,27423.11,27691.74,27960.68,28229.90,28499.42,28769.23,29039.32,29309.70,29580.35,29851.29,30122.50,30393.98,30665.74,30937.76,31210.05,31482.60,31755.41,32028.48,32301.81,32575.39,32849.22,33123.30,33397.62,33672.19,33947.01,34222.06,34497.35,34772.87,35048.63,35324.61,35600.83,35877.27,36153.94,36430.82,36707.93,36985.26,37262.80,37540.55,37818.52,38096.70,38375.08,38653.67,38932.47,39211.46,39490.66,39770.05,40049.64,40329.42,40609.40,40889.57,41169.92,41450.46,41731.19,42012.10,42293.19,42574.47,42855.92,43137.54,43419.35,43701.32,43983.47,44265.78,44548.27,44830.92,45113.73,45396.71,45679.85,45963.15,46246.61,46530.23,46814.00,47097.93,47382.01,47666.24,47950.62,48235.15,48519.83,48804.65,49089.62,49374.73,49659.99,49945.38,50230.91,50516.58,50802.38,51088.32,51374.40,51660.61,51946.94,52233.41,52520.01,52806.74,53093.59,53380.57,53667.67,53954.90,54242.24,54529.71,54817.30,55105.01,55392.83,55680.78,55968.83,56257.01,56545.29,56833.69,57122.20,57410.82,57699.56,57988.39,58277.34,58566.40,58855.56,59144.82,59434.19,59723.67,60013.24,60302.92,60592.70,60882.58,61172.56,61462.63,61752.81,62043.08,62333.44,62623.90,62914.46,63205.11,63495.86,63786.69,64077.62,64368.64,64659.74,64950.94,65242.23,65533.61,65825.07,66116.62,66408.26,66699.98,66991.79,67283.68,67575.65,67867.71,68159.86,68452.08]};
 	const Rg = 8.314462;			// J/(mol K)
 	const P_SL = 101325;			// Pa
 	const QX_SIZE = 608;			// J/g post-flame heat, low end (charge sizing)
 	const QX_STRUCT = 936;			// J/g post-flame heat, high end (structural check)
-	const ALT_K = 0.673;			// heat retained at altitude = (P/P_SL)^ALT_K (fit to 3.3 psia chamber shots)
-	// Single textile mass input. Density only sets the textiles' solid volume: sizing assumes a dense
-	// material (Kevlar, 1.44 g/cm^3), which errs toward a larger charge; the structural check assumes nylon
-	// (1.14 g/cm^3), which errs toward higher pressure.
-	const RHO_TEXT_SIZE = 1.44, RHO_TEXT_STRUCT = 1.14;
-	// Heat-loss fraction A vs f_q (share of free gas volume inside the pack), fitted to
-	// threshold charges from Fetter's fixtures. "hi" = sizing (conservative), "lo" = structural check.
+	const ALT_K = 0.673;			// heat retained at altitude = (P/P_SL)^ALT_K (fit to lowest 3.3 psia chamber shot)
+	const P_TESTED_MIN = 22750;		// Pa (3.3 psia): lowest ambient pressure with test data
+	const E_O2 = 590000;			// J per mol O2 for afterburning BP products; caps post-flame heat by the bay's oxygen
+	// Textile solid volume: sizing ignores it (full bay volume, as in the fits), so more textile can only
+	// raise the charge; the structural check subtracts it at nylon density (1.14 g/cm^3), which raises pressure.
+	const RHO_TEXT_STRUCT = 1.14;
+	// Heat-loss fraction A depends on textile mass per bay volume (mass loading). Fitted to threshold
+	// charges from Fetter's fixtures, whose packing density is unknown: f = loading / RHO_FETTER.
+	// Sizing assumes his packs were 0.20 g/cm^3 (more heat loss for a given loading); the structural check
+	// assumes 0.32 g/cm^3 (a dense storage pack, less heat loss). "hi" = sizing, "lo" = structural check.
+	const RHO_FETTER_SIZE = 0.20, RHO_FETTER_STRUCT = 0.32;	// g/cm^3
+	// Fetter's data can't tell whether heat loss follows textile mass per bay VOLUME or per tube
+	// CROSS-SECTION (fabric the gas passes through). Both agree for his 3 x 15 in VTS-1 bay (L_REF);
+	// sizing uses whichever gives more heat loss, the structural check whichever gives less.
+	const L_REF = 38.1;	// cm
 	const A_PTS = {
-		hiAgainst: [[0,0],[0.211,0.707],[0.444,0.895],[1,0.963]],
-		loAgainst: [[0,0],[0.211,0.397],[0.444,0.843],[1,0.955]],
-		hiOpen:    [[0,0],[0.444,0.843],[1,0.963]],
-		loOpen:    [[0,0],[0.444,0.723],[1,0.955]]
+		hiAgainst: [[0,0],[0.25,0.690],[0.5,0.880],[1,0.944]],
+		loAgainst: [[0,0],[0.25,0.365],[0.5,0.822],[1,0.933]],
+		hiOpen:    [[0,0],[0.5,0.822],[1,0.944]],
+		loOpen:    [[0,0],[0.5,0.690],[1,0.933]]
 	};
-	const A_EXP = {hiAgainst:[0.9612,6.25], hiOpen:[0.9735,4.525]};	// concave fits; sizing uses the larger
+	const A_EXP = {hiAgainst:[0.9498,5.193], hiOpen:[0.9653,3.815]};	// concave fits; sizing uses the larger
 	function pwl(pts, x){
 		for (var i = 1; i < pts.length; i++){
 			if (x <= pts[i][0]){return pts[i-1][1] + (pts[i][1]-pts[i-1][1])*(x-pts[i-1][0])/(pts[i][0]-pts[i-1][0]);}
@@ -84,8 +92,8 @@ overflow:hidden; white-space:nowrap;}
 		return pts[pts.length-1][1];
 	}
 	function lossA(curve, f){
-		f = Math.min(Math.max(f, 0), 1);
-		var a = pwl(A_PTS[curve], f);
+		f = Math.max(f, 0);
+		var a = pwl(A_PTS[curve], Math.min(f, 1));
 		if (A_EXP[curve]){var e = A_EXP[curve]; a = Math.max(a, e[0]*(1-Math.exp(-e[1]*f)));}
 		return a;
 	}
@@ -111,15 +119,16 @@ overflow:hidden; white-space:nowrap;}
 		var T = 0.5*(lo+hi);
 		return {dP:(m*tab(TB.ng, T) + na)*Rg*T/Vf - P0, T:T};
 	}
-	// Smallest charge (g) whose peak pressure reaches target (Pa)
+	// Smallest charge (g) whose peak pressure reaches target (Pa). Qx may be a number or a function of charge mass.
 	function solveCharge(target, Vf, P0, T0, A, Qx){
 		if (!(target > 0)){return 0;}
+		var q = (typeof Qx == "function") ? Qx : function(){return Qx;};
 		var hi = 0.5;
-		while (bayDP(hi, Vf, P0, T0, A, Qx).dP < target){hi *= 2; if (hi > 5000){return Infinity;}}
+		while (bayDP(hi, Vf, P0, T0, A, q(hi)).dP < target){hi *= 2; if (hi > 5000){return Infinity;}}
 		var lo = 0;
 		for (var i = 0; i < 50; i++){
 			var mid = 0.5*(lo+hi);
-			if (bayDP(mid, Vf, P0, T0, A, Qx).dP < target){lo = mid;} else {hi = mid;}
+			if (bayDP(mid, Vf, P0, T0, A, q(mid)).dP < target){lo = mid;} else {hi = mid;}
 		}
 		return hi;
 	}
@@ -158,6 +167,7 @@ overflow:hidden; white-space:nowrap;}
 		var Alt=parseFloat(form.elements["alt"].value) * parseFloat(form.elements["alun"].value);
 		var Frun = parseFloat(form.elements["Frun"].value);
 		var Fric=parseFloat(form.elements["Fric"].value) * Frun;
+		var FricBlank = (form.elements["Fric"].value === "" || isNaN(Fric));	// blank (not 0) triggers the no-pins fallback
 		var PinNum=parseInt(form.elements["Pin"].value)
 		var PinRad=parseFloat(form.elements["Pintype"].value);
 		var MEject=parseFloat(form.elements["MEject"].value) * parseFloat(form.elements["MUnit"].value);
@@ -173,10 +183,11 @@ overflow:hidden; white-space:nowrap;}
 		var DP = PaGL-PaAp;
 		var Pforce = DP*Area;
 		var Efinal=0.5*MEject*VEject*VEject;
-		// Treat a blank pin count or friction field as 0
+		// Treat a blank pin count as 0. A blank friction field with no pins uses 1.2x the apogee pressure-differential
+		// force (2.6 behavior); an entered 0 is a true 0.
 		if (isNaN(PinNum)){PinNum = 0;}
 		if (isNaN(Fric)){Fric = 0;}
-		if (PinNum == 0 && Fric == 0)
+		if (PinNum == 0 && FricBlank)
 		{
 			var check = false;
 			var Fric = 1.2*Pforce;
@@ -213,7 +224,7 @@ overflow:hidden; white-space:nowrap;}
 			else if(Frun == .00980665){PinGood.value = output.toFixed(0) + " gf at apogee";}
 			else if(Frun == 9.80665){PinGood.value = output.toFixed(1)+ " Kgf at apogee";}
 		}
-		var SepForce = Math.pow((StaticSepForce*StaticSepForce+DynamicSepForce*DynamicSepForce), 0.5);
+		var SepForce = Math.max(StaticSepForce, DynamicSepForce);	// the larger requirement sets the charge
 		var Vol = Area*plength;
 		var Pjection = SepForce/Area;
 
@@ -229,43 +240,46 @@ overflow:hidden; white-space:nowrap;}
 
 		// ---- v4: recovery packing ------------------------------------------------------
 		var pos = form.elements["PackPos"].value;
-		var packLen = parseFloat(form.elements["plen"].value) * parseFloat(form.elements["plun"].value);
-		if (isNaN(packLen) || form.elements["plen"].value === ""){packLen = plength;}
-		if (packLen > plength){packLen = plength; warnings.push("Packed length is longer than the bay; using the bay length.");}
 		var mText = num(form.elements["mtext"].value) * parseFloat(form.elements["mtun"].value);
 		var Vhw = num(form.elements["vhw"].value) * parseFloat(form.elements["vhun"].value);
-		if (pos == "empty"){mText = 0; packLen = 0;}
-		var Vpack = Area*packLen;
-		var Vtext = mText/RHO_TEXT_SIZE*1e-6, VtextS = mText/RHO_TEXT_STRUCT*1e-6;
-		var Vfree = Vol - Vtext - Vhw, VfreeS = Vol - VtextS - Vhw;
-		var Vvoid = Vpack - Vtext, VvoidS = Vpack - VtextS;
-		var fq = (pos == "empty" || !(Vfree > 0)) ? 0 : Vvoid/Vfree;
-		var fqS = (pos == "empty" || !(VfreeS > 0)) ? 0 : Math.max(VvoidS, 0)/VfreeS;
-		var rhoPack = (Vpack > 0) ? mText/(Vpack*1e6) : NaN;
+		var VtextS = mText/RHO_TEXT_STRUCT*1e-6;
+		var Vfree = Vol - Vhw, VfreeS = Vol - VtextS - Vhw;	// sizing ignores textile volume; structural check subtracts it
+		var loading = (Vol > 0) ? mText/(Vol*1e6) : NaN;	// g/cm^3 of bay
 		var inputError = "";
-		if (pos != "empty" && mText > 0 && Vvoid <= 0){inputError = "Textile volume exceeds packed volume. Check mass and packed length.";}
+		var mRaw = form.elements["mtext"].value;
+		if (mRaw === "" || isNaN(parseFloat(mRaw))){inputError = "Enter the textile mass.";}
 		else if (Vol > 0 && !(VfreeS > 0)){inputError = "Textile and hardware volume exceed the bay volume.";}
-		if (pos != "empty" && mText > 0 && isFinite(rhoPack)){
-			if (rhoPack < 0.03){warnings.push("Very loose pack (" + fmt(rhoPack) + " g/cm\u00b3): hot gas may pass through without cooling, so the structural-check pressures may be low.");}
-			else if (rhoPack > 0.6){warnings.push("Pack density over 0.6 g/cm\u00b3. Check mass and packed length.");}
+		if (loading > 0.4){warnings.push("Textile mass is more than fits in this bay even at storage-pack density (~0.32 g/cm\u00b3). Check mass and bay size.");}
+		if (plength > 0 && pradius > 0){
+			var LD = plength/(2*pradius), Din = 2*pradius/0.0254;
+			if (mText > 0 && (LD < 2.95 || LD > 5.05)){warnings.push("Bay length is " + fmt(LD) + " diameters; heat-loss values were only tested at 3\u20135.");}
+			if (Din < 2 || Din > 4.1){warnings.push("Bay diameter is outside the tested 2\u20134 in range.");}
 		}
-		if (pos != "empty" && plength > 0 && pradius > 0 && plength/(2*pradius) < 4){warnings.push("Bay length is under 4 diameters: heat-loss values are untested for short, wide bays.");}
 
 		// ---- v4: heat-loss fractions ----------------------------------------------------
-		var Asize = (pos == "empty") ? 0 : (pos == "open") ? lossA("hiOpen", fq) : lossA("hiAgainst", fq);
-		var Astruct = (pos == "empty") ? 0 : (pos == "open") ? lossA("loOpen", fqS) : lossA("loAgainst", fqS);
-		var Ashift = (pos == "empty") ? 0 : lossA("loOpen", fqS);
+		var areal = (Area > 0) ? mText/(Area*1e4) : NaN;	// g/cm^2 of tube cross-section
+		var fSize = Math.max(loading/RHO_FETTER_SIZE, areal/(RHO_FETTER_SIZE*L_REF));
+		var fStruct = Math.min(loading/RHO_FETTER_STRUCT, areal/(RHO_FETTER_STRUCT*L_REF));
+		var Asize = (pos == "open") ? lossA("hiOpen", fSize) : lossA("hiAgainst", fSize);
+		var Astruct = (pos == "open") ? lossA("loOpen", fStruct) : lossA("loAgainst", fStruct);
+		var Ashift = lossA("loOpen", fStruct);
 		var altMode = form.elements["AltMode"].value;
 		var fAlt = Math.min(1, Math.pow(P0/P_SL, ALT_K));
 		if (altMode == "none"){fAlt = 1;}
-		if (altMode == "floor" || (altMode == "auto" && DepASL > HighAltWarn)){fAlt = 0;}
+		if (altMode == "floor"){fAlt = 0;}
+		if (altMode != "none" && P0 < P_TESTED_MIN){warnings.push("Deployment pressure is below the lowest tested (3.3 psia, ~36 kft ASL); the altitude correction is extrapolated.");}
 		var Aeff = 1 - (1 - Asize)*fAlt;
+		// Post-flame heat for sizing, capped by the oxygen in the bay (afterburning needs air)
+		var nO2 = 0.2095*P0*Math.max(Vfree, 0)/(Rg*Tbay);
+		function qxSize(m){return (m > 0) ? Math.min(QX_SIZE, E_O2*nO2/m) : QX_SIZE;}
 
 		// ---- v4: charge ------------------------------------------------------------------
 		var mThresh = NaN, Chg = NaN;
 		if (Vol > 0 && Area > 0 && inputError == ""){
-			mThresh = solveCharge(Pjection, Vfree, P0, Tbay, Aeff, QX_SIZE);
+			mThresh = solveCharge(Pjection, Vfree, P0, Tbay, Aeff, qxSize);
 			Chg = Number((SF*mThresh).toPrecision(2));
+			if (isFinite(mThresh) && qxSize(mThresh) < QX_SIZE){warnings.push("Charge is large for the air in this bay; post-flame heat is limited by the oxygen available.");}
+			if (isFinite(mThresh) && mThresh > 0 && (mThresh < 0.15 || mThresh > 4)){warnings.push("Threshold charge is outside the tested 0.15\u20134 g range.");}
 		}
 		if (inputError != ""){
 			Charge.value = " " + inputError;
@@ -277,14 +291,13 @@ overflow:hidden; white-space:nowrap;}
 			Charge.value = " Unrealistic Input: " + (isFinite(Chg) ? Chg : "> 5000") + " grams";
 		}
 		if (DepASL > HighAltWarn){
-			warnings.unshift("Apogee is above 6 km (~20 kft) ASL. Use high-altitude compatible charge designs such as vinyl tube charges or charge cannons."
-				+ ((fAlt == 0) ? " Charge assumes all heat is lost (cold-gas pressure only)." : ""));
+			warnings.unshift("Apogee is above 6 km (~20 kft) ASL. Use high-altitude compatible charge designs such as vinyl tube charges or charge cannons.");
 		}
 		Warn.value = warnings.join("\n");
 
 		// ---- intermediate values -----------------------------------------------------
 		var ok = isFinite(Chg) && Chg > 0;
-		var PeakPress = ok ? bayDP(Chg, Vfree, P0, Tbay, Aeff, QX_SIZE).dP : NaN;
+		var PeakPress = ok ? bayDP(Chg, Vfree, P0, Tbay, Aeff, qxSize(Chg)).dP : NaN;
 		var PeakForce = PeakPress*Area;
 		var PStruct = ok ? bayDP(Chg, VfreeS, P0, Tbay, Astruct, QX_STRUCT).dP : NaN;
 		var PShift = ok ? bayDP(Chg, VfreeS, P0, Tbay, Ashift, QX_STRUCT).dP : NaN;
@@ -298,9 +311,8 @@ overflow:hidden; white-space:nowrap;}
 		inter.elements["ReqPressOut"].value = fmt(Pjection / parseFloat(inter.elements["RPun"].value));
 		inter.elements["ThreshOut"].value = fmt(mThresh);
 		inter.elements["ClassicOut"].value = fmt(Classic);
-		inter.elements["VfreeOut"].value = fmt(Vfree / parseFloat(inter.elements["VFun"].value));
-		inter.elements["RhoOut"].value = (pos == "empty" || mText == 0) ? "" : fmt(rhoPack);
-		inter.elements["FqOut"].value = (inputError != "") ? "" : fmt(fq);
+		inter.elements["VfreeOut"].value = fmt(VfreeS / parseFloat(inter.elements["VFun"].value));
+		inter.elements["RhoOut"].value = (mText > 0) ? fmt(loading) : "";
 		inter.elements["AOut"].value = (inputError != "") ? "" : fmt(Aeff);
 		inter.elements["PeakForceOut"].value = fmt(PeakForce / parseFloat(inter.elements["PFun"].value));
 		inter.elements["PeakPressOut"].value = fmt(PeakPress / parseFloat(inter.elements["PPun"].value));
@@ -365,7 +377,7 @@ overflow:hidden; white-space:nowrap;}
 </select>
 
 <br>Friction force:<br>
-<input name="Fric" type="number" value="0" min="0"/>
+<input name="Fric" type="number" value="" placeholder="optional" min="0"/>
 <select name="Frun" onchange="updateOut()">
 	<option value="4.4482">lb</option>
 	<option selected="selected" value="1">N</option>
@@ -401,21 +413,10 @@ Pack position:<br>
 <select name="PackPos" onchange="updateOut()" style="width:2.3in;">
 	<option selected="selected" value="against">Packed against the charge</option>
 	<option value="open">Open space at the charge</option>
-	<option value="empty">Empty bay (no textiles)</option>
-</select>
-
-<br>Packed length:<br>
-<input name="plen" type="number" value="" placeholder="assumes full bay if blank" min="0"/>
-<select name="plun" onchange="updateOut()">
-	<option value="0.001">mm</option>
-	<option selected="selected" value=".01">cm</option>
-	<option value="1">m</option>
-	<option value=".0254">in</option>
-	<option value=".3048">ft</option>
 </select>
 
 <br>Textile mass (chutes, cord, blanket/bag):<br>
-<input name="mtext" type="number" value="0" min="0"/>
+<input name="mtext" type="number" value="" placeholder="required" min="0"/>
 <select name="mtun" onchange="updateOut()">
 	<option selected="selected" value="1">g</option>
 	<option value="28.3495">oz</option>
@@ -477,8 +478,7 @@ Bay temperature at deployment:<br>
 
 <br>Altitude heat model:<br>
 <select name="AltMode" onchange="updateOut()" style="width:2.3in;">
-	<option selected="selected" value="auto">Auto (cold gas only above 6 km)</option>
-	<option value="derate">Derate with altitude only</option>
+	<option selected="selected" value="derate">Derate with altitude</option>
 	<option value="floor">Cold gas only (most conservative)</option>
 	<option value="none">None (sea-level values)</option>
 </select>
@@ -548,11 +548,8 @@ Free gas volume:<br>
 	<option value="0.000016387064">in&sup3;</option>
 </select>
 
-<br>Pack density (g/cm&sup3;):<br>
+<br>Textile mass per bay volume (g/cm&sup3;):<br>
 <output class="val" name="RhoOut"></output>
-
-<br>Gas fraction inside pack:<br>
-<output class="val" name="FqOut"></output>
 
 <br>Heat loss fraction (sizing):<br>
 <output class="val" name="AOut"></output>
